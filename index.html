@@ -197,7 +197,7 @@ dl.kv dd.na{color:var(--ink-3);font-weight:400;font-style:italic}
 /* -------- impressão -------- */
 #impresso{display:none}
 @media print{
-  header.topo,nav.abas,main,.cortina,.painel,.aviso-flut{display:none!important}
+  header.topo,nav.abas,main,.cortina,.painel,.aviso-flut,.modal{display:none!important}
   #impresso{display:block!important;padding:0;color:#000;background:#fff}
   @page{margin:14mm}
   body{background:#fff}
@@ -216,6 +216,44 @@ dl.kv dd.na{color:var(--ink-3);font-weight:400;font-style:italic}
   #impresso .assin{margin-top:12mm;display:flex;gap:10mm}
   #impresso .assin div{flex:1;border-top:.75pt solid #000;padding-top:1.5mm;font-size:9pt;text-align:center}
 }
+
+/* -------- edição de ficha -------- */
+.form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px 14px}
+.campo{display:flex;flex-direction:column;gap:3px;min-width:0}
+.campo label{font-size:11px;color:var(--ink-2)}
+.campo input,.campo select,.campo textarea{width:100%;padding:7px 9px;border:1px solid var(--line-2);
+  border-radius:var(--r-sm);background:var(--surface);font-size:13px}
+.campo textarea{resize:vertical;min-height:58px}
+.campo.largo{grid-column:1/-1}
+.travado{grid-column:1/-1;padding:9px 11px;border:1px dashed var(--line-2);border-radius:var(--r-sm);
+  font-size:12px;color:var(--ink-2);background:var(--surface-2)}
+.travado b{color:var(--ink)}
+
+table.dif{width:100%;border-collapse:collapse;font-size:13px}
+table.dif th,table.dif td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.dif th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink-3);font-weight:600}
+table.dif .de{color:var(--ink-3);text-decoration:line-through}
+table.dif .para{font-weight:600}
+
+ol.hist{list-style:none;margin:0;padding:0}
+ol.hist li{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+ol.hist li:last-child{border-bottom:0}
+ol.hist .quando{font-size:12px;color:var(--ink-2);white-space:nowrap;font-variant-numeric:tabular-nums}
+ol.hist b{font-weight:600;font-size:13px}
+ol.hist small{display:block;color:var(--ink-3);font-size:11.5px;margin-top:1px}
+
+.modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:16px}
+.modal.on{display:flex}
+.modal .fundo{position:absolute;inset:0;background:rgba(10,15,22,.55)}
+.modal .caixa{position:relative;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);box-shadow:var(--shadow-lg);width:min(560px,100%);max-height:88vh;
+  display:flex;flex-direction:column}
+.modal .caixa>header{padding:13px 16px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;gap:10px}
+.modal .caixa>header h3{font-size:15px;font-weight:700}
+.modal .meio{padding:14px 16px;overflow-y:auto}
+.modal .pe{padding:11px 16px;border-top:1px solid var(--line);display:flex;gap:8px;
+  justify-content:flex-end;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -251,6 +289,10 @@ dl.kv dd.na{color:var(--ink-3);font-weight:400;font-style:italic}
   </header>
   <div class="corpo" id="fichaCorpo"></div>
   <div class="pe">
+    <button class="bt" id="btEditar" hidden>Editar cadastro</button>
+    <button class="bt" id="btMovimentar" hidden>Movimentar…</button>
+    <button class="bt pri" id="btSalvar" hidden>Conferir e salvar</button>
+    <button class="bt" id="btCancelar" hidden>Cancelar</button>
     <button class="bt pri" id="btImprimir">Imprimir checklist</button>
     <div class="cresce"></div>
     <span class="dim" id="fichaEstado" style="font-size:12px;align-self:center"></span>
@@ -260,10 +302,24 @@ dl.kv dd.na{color:var(--ink-3);font-weight:400;font-style:italic}
 <div id="impresso"></div>
 <div class="aviso-flut" id="avisoFlut"></div>
 
+<div class="modal" id="modal" role="dialog" aria-modal="true">
+  <div class="fundo" id="modalFundo"></div>
+  <div class="caixa">
+    <header>
+      <h3 id="modalTit"></h3>
+      <div class="cresce"></div>
+      <button class="x" id="modalX" aria-label="Fechar">×</button>
+    </header>
+    <div class="meio" id="modalMeio"></div>
+    <div class="pe" id="modalPe"></div>
+  </div>
+</div>
+
 <script>
 /* =========================== estado =========================== */
-const S = { usuario:null, cols:[], checklist:{}, itens:[], cadastros:{},
-            aba:'pessoas', filtros:{}, ordem:{campo:'Nome', dir:1}, aberto:null };
+const S = { usuario:null, cols:[], checklist:{}, movs:{}, itens:[], cadastros:{},
+            aba:'pessoas', filtros:{}, ordem:{campo:'Nome', dir:1},
+            aberto:null, editando:false };
 
 const $  = s => document.querySelector(s);
 const el = (t,c,x) => { const n=document.createElement(t); if(c)n.className=c; if(x!=null)n.textContent=x; return n; };
@@ -318,6 +374,7 @@ async function enviar(acao, corpo){
   S.checklist = r.dados.checklist;
   S.itens     = r.dados.itens;
   S.cadastros = r.dados.cadastros;
+  S.movs      = r.dados.movimentacoes || {};
 
   $('#quem').innerHTML = esc(S.usuario.nome) + ' <span class="selo">' + esc(S.usuario.perfil) + '</span>';
   $('#abas').hidden = false;
@@ -329,7 +386,18 @@ async function enviar(acao, corpo){
   $('#cortina').onclick = fecharFicha;
   $('#fechar').onclick  = fecharFicha;
   $('#btImprimir').onclick = imprimir;
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') fecharFicha(); });
+
+  $('#btEditar').onclick     = () => { S.editando = true;  desenharFicha(); };
+  $('#btCancelar').onclick   = () => { S.editando = false; desenharFicha(); };
+  $('#btSalvar').onclick     = conferirESalvar;
+  $('#btMovimentar').onclick = () => abrirMovimentacao(S.aberto);
+  $('#modalX').onclick       = fecharModal;
+  $('#modalFundo').onclick   = fecharModal;
+
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Escape') return;
+    if ($('#modal').classList.contains('on')) fecharModal(); else fecharFicha();
+  });
 
   pintar();
 })();
@@ -556,35 +624,58 @@ function abrirFicha(id){
   const c = S.cols.find(x => x.Id === id);
   if (!c) return;
   S.aberto = c;
-
-  $('#fichaNome').textContent = c.Nome;
-  $('#fichaSub').innerHTML = esc(c.Funcao) + ' · ' + esc(c.ObraAtual || 'sem obra') + ' · ' + etiqueta(c.Situacao);
-  $('#fichaEstado').textContent = '';
-
-  const corpo = $('#fichaCorpo');
-  corpo.innerHTML = '';
-  corpo.appendChild(blocoDados(c));
-  corpo.appendChild(blocoChecklist(c));
-
+  S.editando = false;
+  desenharFicha();
   $('#cortina').classList.add('on');
   $('#painel').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 
+function desenharFicha(){
+  const c = S.aberto;
+  if (!c) return;
+
+  $('#fichaNome').textContent = c.Nome;
+  $('#fichaSub').innerHTML = esc(c.Funcao) + ' · ' + esc(c.ObraAtual || 'sem obra') +
+    (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + etiqueta(c.Situacao);
+  $('#fichaEstado').textContent = '';
+
+  const corpo = $('#fichaCorpo');
+  corpo.innerHTML = '';
+  if (S.editando) {
+    corpo.appendChild(formDados(c));
+  } else {
+    corpo.appendChild(blocoDados(c));
+    corpo.appendChild(blocoHistorico(c));
+    corpo.appendChild(blocoChecklist(c));
+  }
+  corpo.scrollTop = 0;
+
+  const rh = S.usuario.perfil === 'rh';
+  $('#btEditar').hidden     = !rh ||  S.editando;
+  $('#btMovimentar').hidden = !rh ||  S.editando;
+  $('#btImprimir').hidden   =          S.editando;
+  $('#btSalvar').hidden     = !rh || !S.editando;
+  $('#btCancelar').hidden   = !rh || !S.editando;
+}
+
 function fecharFicha(){
+  if (S.editando && !confirm('Sair sem salvar as alterações da ficha?')) return;
   $('#cortina').classList.remove('on');
   $('#painel').classList.remove('on');
   document.body.style.overflow = '';
   S.aberto = null;
+  S.editando = false;
 }
 
+/* ----------------------- cadastro: só leitura ----------------------- */
 function blocoDados(c){
   const s = el('div','secao');
   s.appendChild(el('h3',null,'Cadastro'));
 
   const pares = [
     ['CPF', c.CPF], ['Nascimento', dataBr(c.Nascimento)],
-    ['Vínculo', c.Vinculo], ['Empresa', c.Empresa],
+    ['Vínculo', c.Vinculo], ['Empresa', nomeDe('empresas', c.Empresa)],
     ['Equipe', c.Equipe], ['Empreiteiro', c.Empreiteiro],
     ['Setor', c.Setor], ['Centro de custo', c.CentroCusto],
     ['Admissão', dataBr(c.Admissao)], ['Início na obra', dataBr(c.InicioNaObra)],
@@ -600,8 +691,7 @@ function blocoDados(c){
   pares.forEach(([k,v]) => {
     const vazio = v == null || String(v).trim() === '';
     dl.appendChild(el('dt',null,k));
-    const dd = el('dd', vazio ? 'na' : null, vazio ? '—' : String(v));
-    dl.appendChild(dd);
+    dl.appendChild(el('dd', vazio ? 'na' : null, vazio ? '—' : String(v)));
   });
   s.appendChild(dl);
 
@@ -614,10 +704,404 @@ function blocoDados(c){
   return s;
 }
 
+/* -------------------------- cadastro: edição -------------------------- */
+/**
+ * Só correção de dado. Obra, situação e desligamento não estão aqui de
+ * propósito: isso é história, e história entra por "Movimentar".
+ */
+const CAMPOS_FICHA = [
+  ['Nome',               'Nome',                   'texto'],
+  ['CPF',                'CPF',                    'texto'],
+  ['Nascimento',         'Nascimento',             'data'],
+  ['Funcao',             'Função',                 'lista:funcoes'],
+  ['Setor',              'Setor',                  'sugere'],
+  ['Vinculo',            'Vínculo',                'sugere'],
+  ['Empresa',            'Empresa',                'lista:empresas'],
+  ['Equipe',             'Equipe',                 'lista:equipes'],
+  ['Empreiteiro',        'Empreiteiro',            'sugere'],
+  ['Admissao',           'Admissão',               'data'],
+  ['Salario',            'Salário',                'texto'],
+  ['RecebeAdiantamento', 'Recebe adiantamento',    'simnao'],
+  ['Alojado',            'Alojado',                'simnao'],
+  ['Alojamento',         'Alojamento',             'lista:alojamentos'],
+  ['Telefone',           'Telefone',               'texto'],
+  ['ContatoEmergencia',  'Contato de emergência',  'texto'],
+  ['TelEmergencia',      'Telefone de emergência', 'texto'],
+  ['Observacao',         'Observação',             'longo']
+];
+
+/** De onde cada lista sai, e como se chama o que vale e o que aparece. */
+const LISTAS = {
+  funcoes:      { valor:'Funcao',  rotulo:null,          ativo:'Ativa' },
+  empresas:     { valor:'Codigo',  rotulo:'Apelido',     ativo:'Ativa' },
+  equipes:      { valor:'Nome',    rotulo:null,          ativo:'Ativa' },
+  alojamentos:  { valor:'Nome',    rotulo:'Cidade',      ativo:'Ativo' },
+  obras:        { valor:'Codigo',  rotulo:'Nome',        ativo:'Ativa' },
+  centrosCusto: { valor:'Codigo',  rotulo:'Nome',        ativo:'Ativo' }
+};
+
+function opcoesDe(tabela, incluir){
+  const d = LISTAS[tabela];
+  const linhas = (S.cadastros[tabela] || []).filter(l =>
+    !d.ativo || !(l[d.ativo] != null && String(l[d.ativo]).toLowerCase() === 'não'));
+
+  const lista = linhas.map(l => ({
+    valor: String(l[d.valor] || '').trim(),
+    rotulo: String(l[d.valor] || '').trim() +
+            (d.rotulo && l[d.rotulo] ? ' — ' + l[d.rotulo] : '')
+  })).filter(o => o.valor);
+
+  // valor antigo que não está mais na lista não pode sumir da ficha
+  const atual = String(incluir || '').trim();
+  if (atual && !lista.some(o => o.valor === atual)) {
+    lista.unshift({ valor: atual, rotulo: atual + ' (fora da lista)' });
+  }
+  lista.sort((a,b) => a.rotulo.localeCompare(b.rotulo, 'pt-BR'));
+  return lista;
+}
+
+function nomeDe(tabela, valor){
+  if (!valor) return valor;
+  const d = LISTAS[tabela];
+  const l = (S.cadastros[tabela] || []).find(x => String(x[d.valor]).trim() === String(valor).trim());
+  return l && d.rotulo && l[d.rotulo] ? valor + ' — ' + l[d.rotulo] : valor;
+}
+
+function campo(rotulo, nó, largo){
+  const c = el('div','campo' + (largo ? ' largo' : ''));
+  c.appendChild(el('label', null, rotulo));
+  c.appendChild(nó);
+  return c;
+}
+
+function formDados(c){
+  const s = el('div','secao');
+  s.appendChild(el('h3',null,'Editar cadastro'));
+
+  const grade = el('div','form');
+
+  CAMPOS_FICHA.forEach(([chave, rotulo, tipo]) => {
+    const atual = c[chave] == null ? '' : String(c[chave]);
+    let no, largo = false;
+
+    if (tipo === 'data') {
+      no = el('input'); no.type = 'date'; no.value = isoDe(atual);
+
+    } else if (tipo === 'simnao') {
+      no = el('select');
+      no.innerHTML = ['', 'sim', 'não']
+        .map(v => '<option value="' + v + '"' + (norm(atual) === norm(v) ? ' selected' : '') + '>' +
+                  (v || '—') + '</option>').join('');
+
+    } else if (tipo.indexOf('lista:') === 0) {
+      const tabela = tipo.slice(6);
+      no = el('select');
+      no.innerHTML = '<option value="">—</option>' +
+        opcoesDe(tabela, atual).map(o =>
+          '<option value="' + esc(o.valor) + '"' + (o.valor === atual ? ' selected' : '') + '>' +
+          esc(o.rotulo) + '</option>').join('');
+
+    } else if (tipo === 'sugere') {
+      const id = 'dl-' + chave;
+      no = el('input'); no.type = 'text'; no.value = atual; no.setAttribute('list', id);
+      const dl = el('datalist'); dl.id = id;
+      dl.innerHTML = unicos(chave).map(v => '<option value="' + esc(v) + '">').join('');
+      s.appendChild(dl);
+
+    } else if (tipo === 'longo') {
+      no = el('textarea'); no.value = atual; largo = true;
+
+    } else {
+      no = el('input'); no.type = 'text'; no.value = atual;
+    }
+
+    no.dataset.campo = chave;
+    grade.appendChild(campo(rotulo, no, largo));
+  });
+
+  const travado = el('div','travado');
+  travado.innerHTML =
+    '<b>Obra, situação, centro de custo e desligamento não se editam aqui.</b><br>' +
+    'Hoje: ' + esc(c.ObraAtual || 'sem obra') +
+    (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + esc(c.Situacao) + '. ' +
+    'Para mudar, feche a edição e use <b>Movimentar</b> — assim fica registrado no histórico.';
+  grade.appendChild(travado);
+
+  s.appendChild(grade);
+  return s;
+}
+
+function lerForm(){
+  const r = {};
+  $('#fichaCorpo').querySelectorAll('[data-campo]').forEach(n => {
+    r[n.dataset.campo] = String(n.value == null ? '' : n.value).trim();
+  });
+  return r;
+}
+
+async function conferirESalvar(){
+  const c = S.aberto;
+  if (!c) return;
+
+  const novo = lerForm();
+  if (!novo.Nome) return avisar('O nome não pode ficar em branco.');
+
+  const dif = [];
+  Object.keys(novo).forEach(k => {
+    const antes = ['Nascimento','Admissao'].includes(k) ? isoDe(c[k]) : String(c[k] == null ? '' : c[k]).trim();
+    if (antes !== novo[k]) dif.push([k, antes, novo[k]]);
+  });
+
+  if (!dif.length) { S.editando = false; desenharFicha(); return avisar('Nada mudou.'); }
+
+  abrirModal('Conferir alterações', tabelaDif(dif), [
+    ['Voltar e corrigir', 'bt', fecharModal],
+    ['Confirmar e salvar', 'bt pri', async () => {
+      fecharModal();
+      $('#fichaEstado').textContent = 'salvando…';
+      const r = await enviar('salvar', { colaborador: Object.assign({ Id:c.Id }, novo) });
+      if (!r || !r.ok) { $('#fichaEstado').textContent = ''; return avisar(r && r.erro || 'Não consegui salvar.'); }
+      if (r.colaborador) trocarColaborador(r.colaborador);
+      S.editando = false;
+      desenharFicha();
+      pintar();
+      avisar(r.mudou + ' campo(s) salvo(s).');
+    }]
+  ]);
+}
+
+function tabelaDif(dif){
+  const t = el('table','dif');
+  t.innerHTML = '<thead><tr><th>Campo</th><th>De</th><th>Para</th></tr></thead><tbody>' +
+    dif.map(([k,a,b]) => '<tr><td>' + esc(rotuloDe(k)) + '</td>' +
+      '<td class="de">' + esc(a || '—') + '</td>' +
+      '<td class="para">' + esc(b || '—') + '</td></tr>').join('') + '</tbody>';
+  return t;
+}
+
+function rotuloDe(chave){
+  const f = CAMPOS_FICHA.find(x => x[0] === chave);
+  if (f) return f[1];
+  return ({ ObraAtual:'Obra', CentroCusto:'Centro de custo', Situacao:'Situação',
+            Desligamento:'Desligamento', MotivoDesligamento:'Motivo do desligamento',
+            InicioNaObra:'Início na obra', Admissao:'Admissão' })[chave] || chave;
+}
+
+function trocarColaborador(novo){
+  const i = S.cols.findIndex(x => x.Id === novo.Id);
+  if (i >= 0) S.cols[i] = novo;
+  S.aberto = novo;
+}
+
+/* ------------------------- movimentações ------------------------- */
+/**
+ * Mesmas regras do Api.gs. Aqui elas servem só para mostrar o de/para
+ * antes de gravar — quem decide, de verdade, é o servidor.
+ */
+const MOVIMENTACOES = {
+  transferencia: { rotulo:'Transferência de obra', campos:['data','obraDestino','centroCusto','motivo'],
+    exige:['data','obraDestino'], rotuloData:'Data da transferência',
+    aplica:(c,p) => ({ ObraAtual:p.obraDestino, CentroCusto:p.centroCusto || '', InicioNaObra:p.data }) },
+
+  funcao: { rotulo:'Mudança de função', campos:['data','funcao','setor','motivo'],
+    exige:['data','funcao'], rotuloData:'A partir de',
+    aplica:(c,p) => p.setor ? ({ Funcao:p.funcao, Setor:p.setor }) : ({ Funcao:p.funcao }) },
+
+  ferias: { rotulo:'Início de férias', campos:['data','motivo'],
+    exige:['data'], rotuloData:'Primeiro dia de férias',
+    aplica:() => ({ Situacao:'ferias' }) },
+
+  afastamento: { rotulo:'Afastamento', campos:['data','motivo'],
+    exige:['data','motivo'], rotuloData:'Início do afastamento',
+    aplica:() => ({ Situacao:'afastado' }) },
+
+  retorno: { rotulo:'Retorno ao trabalho', campos:['data','motivo'],
+    exige:['data'], rotuloData:'Data do retorno',
+    aplica:() => ({ Situacao:'ativo' }) },
+
+  desligamento: { rotulo:'Desligamento', campos:['data','motivo'],
+    exige:['data','motivo'], rotuloData:'Último dia',
+    aplica:(c,p) => ({ Situacao:'desligado', Desligamento:p.data, MotivoDesligamento:p.motivo }) },
+
+  recontratacao: { rotulo:'Recontratação', campos:['data','obraDestino','centroCusto','motivo'],
+    exige:['data','obraDestino'], rotuloData:'Nova admissão',
+    aplica:(c,p) => ({ Situacao:'ativo', Admissao:p.data, InicioNaObra:p.data,
+                       ObraAtual:p.obraDestino, CentroCusto:p.centroCusto || '',
+                       Desligamento:'', MotivoDesligamento:'' }) }
+};
+
+function abrirMovimentacao(c){
+  if (!c) return;
+  const desligado = norm(c.Situacao) === 'desligado';
+  const tipos = Object.keys(MOVIMENTACOES).filter(t =>
+    desligado ? ['recontratacao'].includes(t) : t !== 'recontratacao');
+
+  const meio = el('div');
+  const sel = el('select');
+  sel.innerHTML = tipos.map(t => '<option value="' + t + '">' + MOVIMENTACOES[t].rotulo + '</option>').join('');
+  meio.appendChild(campo('O que aconteceu', sel, true));
+
+  const area = el('div','form'); area.style.marginTop = '12px';
+  meio.appendChild(area);
+
+  const desenhar = () => {
+    const r = MOVIMENTACOES[sel.value];
+    area.innerHTML = '';
+
+    r.campos.forEach(k => {
+      let no, rotulo = k, largo = false;
+
+      if (k === 'data') {
+        no = el('input'); no.type = 'date'; no.value = hojeIso();
+        rotulo = r.rotuloData;
+
+      } else if (k === 'obraDestino') {
+        no = el('select');
+        no.innerHTML = '<option value="">—</option>' + opcoesDe('obras').map(o =>
+          '<option value="' + esc(o.valor) + '">' + esc(o.rotulo) + '</option>').join('');
+        rotulo = 'Obra de destino';
+
+      } else if (k === 'centroCusto') {
+        no = el('select');
+        no.innerHTML = '<option value="">— (só para a obra ADM)</option>' + opcoesDe('centrosCusto').map(o =>
+          '<option value="' + esc(o.valor) + '">' + esc(o.rotulo) + '</option>').join('');
+        rotulo = 'Centro de custo';
+
+      } else if (k === 'funcao') {
+        no = el('select');
+        no.innerHTML = '<option value="">—</option>' + opcoesDe('funcoes', c.Funcao).map(o =>
+          '<option value="' + esc(o.valor) + '"' + (o.valor === c.Funcao ? ' selected' : '') + '>' +
+          esc(o.rotulo) + '</option>').join('');
+        rotulo = 'Nova função';
+
+      } else if (k === 'setor') {
+        no = el('input'); no.type = 'text'; no.value = c.Setor || '';
+        rotulo = 'Setor (deixe como está se não mudar)';
+
+      } else {
+        no = el('textarea'); no.value = ''; largo = true;
+        rotulo = r.exige.includes('motivo') ? 'Motivo (obrigatório)' : 'Motivo / observação';
+      }
+
+      no.dataset.mov = k;
+      area.appendChild(campo(rotulo, no, largo));
+    });
+  };
+
+  sel.onchange = desenhar;
+  desenhar();
+
+  abrirModal('Movimentar · ' + c.Nome, meio, [
+    ['Cancelar', 'bt', fecharModal],
+    ['Conferir', 'bt pri', () => {
+      const tipo = sel.value, r = MOVIMENTACOES[tipo], p = { tipo, idColaborador:c.Id };
+      area.querySelectorAll('[data-mov]').forEach(n => p[n.dataset.mov] = String(n.value || '').trim());
+
+      const faltam = r.exige.filter(k => !p[k]);
+      if (faltam.length) return avisar('Falta preencher: ' + faltam.map(rotuloMov).join(', ') + '.');
+
+      const depois = r.aplica(c, p);
+      const dif = Object.keys(depois)
+        .map(k => [k, String(c[k] == null ? '' : c[k]), String(depois[k])])
+        .filter(([,a,b]) => a !== b);
+
+      const conf = el('div');
+      const cab = el('div','faixa');
+      cab.innerHTML = '<b>' + esc(r.rotulo) + '</b> · ' + esc(dataBr(p.data)) +
+        (p.motivo ? '<br>' + esc(p.motivo) : '');
+      conf.appendChild(cab);
+      conf.appendChild(dif.length ? tabelaDif(dif)
+                                  : el('div','vazio','O cadastro não muda — fica só o registro no histórico.'));
+
+      abrirModal('Conferir movimentação', conf, [
+        ['Voltar', 'bt', () => abrirMovimentacao(c)],
+        ['Registrar', 'bt pri', async () => {
+          fecharModal();
+          $('#fichaEstado').textContent = 'registrando…';
+          const resp = await enviar('movimentar', { movimentacao: p });
+          if (!resp || !resp.ok) { $('#fichaEstado').textContent = ''; return avisar(resp && resp.erro || 'Não consegui registrar.'); }
+          if (resp.colaborador) trocarColaborador(resp.colaborador);
+          if (resp.movimentacao) {
+            S.movs[c.Id] = S.movs[c.Id] || [];
+            S.movs[c.Id].unshift(resp.movimentacao);
+          }
+          desenharFicha();
+          pintar();
+          avisar(resp.rotulo + ' registrada.');
+        }]
+      ]);
+    }]
+  ]);
+}
+
+function rotuloMov(k){
+  return ({ data:'data', obraDestino:'obra de destino', funcao:'função',
+            motivo:'motivo', centroCusto:'centro de custo', setor:'setor' })[k] || k;
+}
+
+function blocoHistorico(c){
+  const s = el('div','secao');
+  const lista = S.movs[c.Id] || [];
+  s.appendChild(el('h3', null, 'Histórico' + (lista.length ? ' — ' + lista.length : '')));
+
+  if (!lista.length) {
+    s.appendChild(el('div','vazio','Nenhuma movimentação registrada.'));
+    return s;
+  }
+
+  const ol = el('ol','hist');
+  lista.forEach(m => {
+    const li = el('li');
+    li.appendChild(el('div','quando', dataBr(m.data)));
+
+    const d = el('div');
+    const r = MOVIMENTACOES[m.tipo];
+    d.appendChild(el('b', null, r ? r.rotulo : m.tipo));
+
+    const partes = [];
+    if (m.obraOrigem && m.obraDestino && m.obraOrigem !== m.obraDestino)
+      partes.push(m.obraOrigem + ' → ' + m.obraDestino);
+    if (m.motivo) partes.push(m.motivo);
+    if (m.detalhe) partes.push(m.detalhe);
+    if (m.por) partes.push('por ' + m.por);
+    if (partes.length) d.appendChild(el('small', null, partes.join(' · ')));
+
+    li.appendChild(d);
+    ol.appendChild(li);
+  });
+  s.appendChild(ol);
+  return s;
+}
+
+/* ---------------------------- modal ---------------------------- */
+function abrirModal(titulo, conteudo, botoes){
+  $('#modalTit').textContent = titulo;
+  const meio = $('#modalMeio'); meio.innerHTML = ''; meio.appendChild(conteudo);
+
+  const pe = $('#modalPe'); pe.innerHTML = '';
+  (botoes || []).forEach(([rotulo, classe, acao]) => {
+    const b = el('button', classe, rotulo);
+    b.onclick = acao;
+    pe.appendChild(b);
+  });
+
+  $('#modal').classList.add('on');
+  meio.scrollTop = 0;
+}
+
+function fecharModal(){ $('#modal').classList.remove('on'); }
+
+function hojeIso(){
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
 /** Os dois marcos da planilha: admissão + 44 dias, e mais 45. */
 function experiencia(c){
   if (!c.Admissao || c.Vinculo !== 'CLT') return '';
-  const base = new Date(c.Admissao + 'T12:00:00');
+  const iso = isoDe(c.Admissao);
+  if (!iso) return '';
+  const base = new Date(iso + 'T12:00:00');
   if (isNaN(base)) return '';
   const m1 = new Date(base); m1.setDate(m1.getDate() + 44);
   const m2 = new Date(m1);   m2.setDate(m2.getDate() + 45);
@@ -776,11 +1260,26 @@ function imprimir(){
 }
 
 /* =========================== formatos =========================== */
-function dataBr(s){
+const d2 = x => String(x).padStart(2,'0');
+
+/** Entende 2026-05-25, 25/05/2026 e 25/05/26. Devolve sempre AAAA-MM-DD. */
+function isoDe(s){
   if (!s) return '';
   const t = String(s).trim();
-  if (/^\d{4}-\d{2}-\d{2}/.test(t)) { const [a,me,d] = t.slice(0,10).split('-'); return d+'/'+me+'/'+a; }
-  return t;
+  let m = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+  if (m) return m[1] + '-' + d2(m[2]) + '-' + d2(m[3]);
+  m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  if (m) return m[3] + '-' + d2(m[2]) + '-' + d2(m[1]);
+  m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2})$/);
+  if (m) return '20' + m[3] + '-' + d2(m[2]) + '-' + d2(m[1]);
+  return '';
+}
+
+function dataBr(s){
+  const iso = isoDe(s);
+  if (!iso) return s ? String(s).trim() : '';
+  const [a,me,d] = iso.split('-');
+  return d + '/' + me + '/' + a;
 }
 function dinheiro(v){
   const n = Number(String(v).replace(/\./g,'').replace(',','.'));
