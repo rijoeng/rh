@@ -52,6 +52,7 @@ const API = 'https://script.google.com/macros/s/AKfycbyEsWr9A1f2L3dvdrGjlJd9KXeK
   --shadow:0 1px 2px rgba(0,0,0,.5); --shadow-lg:0 14px 36px rgba(0,0,0,.6);
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);
   font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
@@ -1281,8 +1282,19 @@ function dataBr(s){
   const [a,me,d] = iso.split('-');
   return d + '/' + me + '/' + a;
 }
+/**
+ * A base guarda salário como 1654.08 — ponto decimal, à moda do Sheets.
+ * Mas alguém pode digitar 1.654,08. Os dois precisam dar o mesmo valor,
+ * e apagar o ponto do primeiro caso multiplicaria por cem.
+ */
 function dinheiro(v){
-  const n = Number(String(v).replace(/\./g,'').replace(',','.'));
+  if (v == null || String(v).trim() === '') return '';
+  let t = String(v).replace(/R\$/g,'').replace(/\s/g,'').trim();
+
+  if (t.indexOf(',') !== -1)                 t = t.replace(/\./g,'').replace(',','.');
+  else if (/^\d{1,3}(\.\d{3})+$/.test(t))    t = t.replace(/\./g,'');   // 1.654 = mil e seiscentos
+
+  const n = Number(t);
   if (isNaN(n)) return String(v);
   return n.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
 }
