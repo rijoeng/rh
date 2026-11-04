@@ -386,6 +386,37 @@ ol.periodos .agora{background:var(--good-bg);color:var(--good);padding:1px 7px;b
 .trilha.dupla span i{display:block;height:100%;border-radius:4px;background:var(--accent-2)}
 .trilha.dupla span i.saida{background:var(--grey)}
 .barra-item .qt .entrou{color:var(--accent-ink)}
+
+/* ---------- documentos no Drive ---------- */
+.sug{border:1px solid var(--line);border-left:3px solid var(--accent-2);border-radius:var(--r-sm);
+  background:var(--surface);padding:11px 13px;margin-bottom:8px}
+.sug.alerta{border-left-color:var(--crit)}
+.sug.duvida{border-left-color:var(--warn-dot)}
+.sug .arq{font-weight:600;font-size:13px;overflow-wrap:anywhere}
+.sug .diz{font-size:12.5px;margin-top:3px}
+.sug .pq{font-size:12px;color:var(--ink-3);margin-top:2px}
+.sug .acoes-linha{margin-top:9px}
+.sug .acoes-linha select{padding:4px 8px;border:1px solid var(--line-2);
+  border-radius:var(--r-sm);background:var(--surface);font-size:12px;max-width:260px}
+.grupo-pessoa{margin-bottom:18px}
+.grupo-pessoa>h4{font-family:Archivo,sans-serif;font-size:12.5px;font-weight:700;margin:0 0 8px;
+  display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.grupo-pessoa>h4 .obra{font-weight:500;font-size:12px;color:var(--ink-3)}
+
+ul.arquivos{list-style:none;margin:0;padding:0}
+ul.arquivos li{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:baseline;
+  padding:7px 0;border-bottom:1px solid var(--line);font-size:13px}
+ul.arquivos li:last-child{border-bottom:0}
+ul.arquivos .cod{font-variant-numeric:tabular-nums;color:var(--ink-3);font-size:12px;min-width:30px}
+ul.arquivos .nome-arq{overflow-wrap:anywhere}
+ul.arquivos small{display:block;color:var(--ink-3);font-size:11.5px}
+.est{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:600;
+  white-space:nowrap}
+.est.assinado{background:var(--good-bg);color:var(--good)}
+.est.recebido{background:var(--crit-bg);color:var(--crit)}
+.est.pessoal,.est.aso{background:var(--surface-3);color:var(--ink-2)}
+.est.mensal{background:var(--accent-soft);color:var(--accent-ink)}
+.est.fora{background:var(--warn-bg);color:var(--warn)}
 </style>
 </head>
 <body>
@@ -413,6 +444,7 @@ ol.periodos .agora{background:var(--good-bg);color:var(--good);padding:1px 7px;b
       <button data-aba="pendencias"><span class="ic" aria-hidden="true">⚠️</span>Pendências <span class="cnt alerta" id="nPend"></span></button>
       <button data-aba="obras"><span class="ic" aria-hidden="true">🏗️</span>Por obra</button>
       <button data-aba="painel"><span class="ic" aria-hidden="true">📊</span>Painel</button>
+      <button data-aba="documentos" hidden><span class="ic" aria-hidden="true">📄</span>Documentos <span class="cnt" id="nDocs"></span></button>
     </nav>
   </div>
 </header>
@@ -461,7 +493,7 @@ ol.periodos .agora{background:var(--good-bg);color:var(--good);padding:1px 7px;b
 <script>
 /* =========================== estado =========================== */
 const S = { usuario:null, cols:[], checklist:{}, movs:{}, cargos:{}, exp:{}, itens:[],
-            cadastros:{}, config:{},
+            docs:{}, sugestoes:[], cadastros:{}, config:{},
             aba:'pessoas', filtros:{}, ordem:{campo:'Nome', dir:1},
             aberto:null, editando:false };
 
@@ -523,6 +555,8 @@ async function enviar(acao, corpo){
   S.cargos    = r.dados.cargos || {};
   S.exp       = r.dados.experiencia || {};
   S.config    = r.dados.config || {};
+  S.docs      = r.dados.documentos || {};
+  S.sugestoes = r.dados.sugestoes || [];
 
   $('#quem').innerHTML = '<span class="dot"></span><b>' + esc(S.usuario.nome) + '</b> · ' + esc(S.usuario.perfil);
   $('#quem').hidden = false;
@@ -738,10 +772,21 @@ function pintar(){
     ativos.filter(c => criticosAbertos(c).length).length +
     ativos.filter(c => pendenciaExp(c)).length;
 
+  const bDocs = $('#abas').querySelector('[data-aba="documentos"]');
+  if (bDocs) {
+    bDocs.hidden = S.usuario.perfil !== 'rh';
+    const n = $('#nDocs');
+    if (n) {
+      n.textContent = S.sugestoes.length;
+      n.classList.toggle('alerta', S.sugestoes.some(x => x.tipo === 'assinatura'));
+    }
+  }
+
   if (S.aba === 'pessoas')    return telaPessoas();
   if (S.aba === 'pendencias') return telaPendencias();
   if (S.aba === 'obras')      return telaObras();
   if (S.aba === 'painel')     return telaPainel();
+  if (S.aba === 'documentos') return telaDocumentos();
 }
 
 function unicos(campo){
@@ -1454,6 +1499,7 @@ function desenharFicha(){
     corpo.appendChild(faixaDeCargo(c));
     corpo.appendChild(blocoDados(c));
     corpo.appendChild(blocoExperiencia(c));
+    corpo.appendChild(blocoDocumentos(c));
     corpo.appendChild(blocoCargos(c));
     corpo.appendChild(blocoHistorico(c));
     corpo.appendChild(blocoChecklist(c));
@@ -2244,6 +2290,248 @@ function blocoHistorico(c){
     ol.appendChild(li);
   });
   s.appendChild(ol);
+  return s;
+}
+
+
+/* ===================== documentos no Drive =====================
+   O Documentos.gs varre a pasta 02_ RH_SST e diz o que achou. Aqui o RH
+   confirma ou recusa, item por item. Nada entra no checklist sem esse aceite,
+   e documento que chegou da contabilidade sem assinatura NÃO conta como
+   entregue — aceitar registra o recebimento e o item continua em falta. */
+
+const ESTADOS_DOC = {
+  pessoal:  'documentação pessoal',
+  aso:      'ASO',
+  recebido: 'pendente de assinatura',
+  assinado: 'assinado',
+  mensal:   'rotina mensal',
+  fora:     'fora da estrutura padrão'
+};
+
+function nomeItem(codigo){
+  const it = S.itens.find(x => String(x.Codigo) === String(codigo));
+  return it ? String(it.Item).split('—')[0].trim() : '';
+}
+
+function telaDocumentos(){
+  const m = $('#main'); m.innerHTML = '';
+
+  if (S.usuario.perfil !== 'rh') {
+    m.appendChild(el('div','faixa','A conferência de documentos é do RH.'));
+    return;
+  }
+
+  const fila = S.sugestoes;
+  const total = Object.values(S.docs).reduce((n, l) => n + l.length, 0);
+
+  if (!total && !fila.length) {
+    const f = el('div','faixa');
+    f.innerHTML = '<b>O mapa do Drive ainda não foi feito.</b><br>' +
+      'No Apps Script, rode <b>mapearDocumentos</b>. Ele percorre a pasta ' +
+      '02_ RH_SST, liga cada pessoa à pasta dela e lista o que existe. ' +
+      'Só leitura — não renomeia, não move e não apaga nada.';
+    m.appendChild(f);
+    return;
+  }
+
+  const pendentes = fila.filter(s => s.tipo === 'assinatura');
+  const pastas    = fila.filter(s => s.tipo === 'pasta');
+  const itens     = fila.filter(s => s.tipo === 'item');
+
+  const topo = el('div','indicadores');
+  topo.appendChild(cartaoNumero('Na fila de conferência', fila.length,
+    '<span class="chip">' + itens.length + (itens.length === 1 ? ' documento' : ' documentos') + '</span> ' +
+    '<span class="chip">' + pastas.length + (pastas.length === 1 ? ' pasta' : ' pastas') + '</span>'));
+  topo.appendChild(cartaoNumero('Pendentes de assinatura', pendentes.length,
+    '<span class="chip">recebidos da contabilidade</span>', pendentes.length > 0));
+  topo.appendChild(cartaoNumero('Arquivos mapeados', total,
+    '<span class="chip">' + Object.keys(S.docs).length + ' pessoa(s) com pasta</span>'));
+  m.appendChild(topo);
+
+  if (!fila.length) {
+    m.appendChild(el('div','faixa','Nada esperando conferência. O mapa está em dia.'));
+    return;
+  }
+
+  // pendente de assinatura primeiro: é o que trava contratação
+  const ordem = { assinatura:0, pasta:1, item:2 };
+  const porPessoa = {};
+  fila.slice().sort((a,b) => (ordem[a.tipo] ?? 9) - (ordem[b.tipo] ?? 9))
+      .forEach(s => {
+        const c = S.cols.find(x => x.Id === s.idColaborador);
+        const chave = c ? c.Nome : '(pasta sem dono no cadastro)';
+        (porPessoa[chave] = porPessoa[chave] || []).push({ s, c });
+      });
+
+  Object.keys(porPessoa).sort((a,b) => a.localeCompare(b,'pt-BR')).forEach(nome => {
+    const g = el('div','grupo-pessoa');
+    const c = porPessoa[nome][0].c;
+
+    const h = el('h4');
+    h.innerHTML = esc(nome) +
+      (c ? ' <span class="obra">' + esc(c.ObraAtual || 'sem obra') + ' · ' +
+           esc(c.Funcao || '') + '</span>' : '') +
+      ' <span class="chip">' + porPessoa[nome].length + '</span>';
+    if (c) { h.style.cursor = 'pointer'; h.onclick = () => abrirFicha(c.Id); }
+    g.appendChild(h);
+
+    porPessoa[nome].forEach(({ s }) => g.appendChild(cartaoSugestao(s)));
+    m.appendChild(g);
+  });
+}
+
+function cartaoSugestao(s){
+  const cls = s.tipo === 'assinatura' ? ' alerta'
+            : s.confianca === 'baixa' ? ' duvida' : '';
+  const d = el('div','sug' + cls);
+
+  const arq = el('div','arq');
+  arq.innerHTML = esc(s.arquivo) +
+    (s.link ? ' <a href="' + esc(s.link) + '" target="_blank" rel="noopener">abrir no Drive ↗</a>' : '');
+  d.appendChild(arq);
+
+  const diz = el('div','diz');
+  diz.innerHTML = esc(s.sugestao) +
+    (s.codigo ? ' <span class="chip">' + esc(s.codigo) + ' ' + esc(nomeItem(s.codigo)) + '</span>' : '') +
+    ' <span class="chip">confiança ' + esc(s.confianca) + '</span>';
+  d.appendChild(diz);
+
+  if (s.motivo) d.appendChild(el('div','pq', s.motivo));
+
+  if (s.tipo === 'assinatura') {
+    d.appendChild(el('div','pq',
+      'Confirmar aqui registra o recebimento. O item segue em falta até a versão ' +
+      'assinada aparecer em "04- Documentos Assinados" ou "06- Contratos assinado".'));
+  }
+
+  const acoes = el('div','acoes-linha');
+
+  if (s.tipo === 'pasta') {
+    const sel = el('select');
+    sel.innerHTML = '<option value="">— de quem é esta pasta? —</option>' +
+      S.cols.slice().sort((a,b) => a.Nome.localeCompare(b.Nome,'pt-BR'))
+        .map(c => '<option value="' + esc(c.Id) + '"' +
+          (c.Id === s.idColaborador ? ' selected' : '') + '>' + esc(c.Nome) + '</option>').join('');
+    acoes.appendChild(sel);
+
+    const b = el('button','bt pri sm','Vincular');
+    b.onclick = () => {
+      if (!sel.value) return avisar('Escolha de quem é a pasta.');
+      decidirDoc({ op:'vincularPasta', id:s.id, idColaborador:sel.value });
+    };
+    acoes.appendChild(b);
+
+  } else {
+    const b = el('button','bt pri sm', s.tipo === 'assinatura' ? 'Registrar recebimento' : 'Confirmar');
+    b.onclick = () => decidirDoc({ op:'aceitar', id:s.id });
+    if (!s.codigo) b.disabled = true;
+    acoes.appendChild(b);
+
+    const sel = el('select');
+    sel.innerHTML = '<option value="">— outro item —</option>' +
+      S.itens.slice().sort((a,b) => String(a.Ordem) - String(b.Ordem))
+        .map(it => '<option value="' + esc(it.Codigo) + '">' + esc(it.Codigo) + ') ' +
+          esc(String(it.Item).split('—')[0].trim()) + '</option>').join('');
+    sel.onchange = () => {
+      if (!sel.value) return;
+      decidirDoc({ op:'corrigir', id:s.id, codigoItem:sel.value });
+    };
+    acoes.appendChild(sel);
+  }
+
+  const r = el('button','bt sm','Recusar');
+  r.onclick = () => {
+    const motivo = prompt('Por que recusar? (fica registrado)');
+    if (motivo === null) return;
+    decidirDoc({ op:'recusar', id:s.id, motivo });
+  };
+  acoes.appendChild(r);
+
+  d.appendChild(acoes);
+  return d;
+}
+
+async function decidirDoc(corpo){
+  const r = await enviar('documento', { documento: corpo });
+  if (!r || !r.ok) return avisar(r && r.erro || 'Não consegui registrar.');
+
+  if (r.sugestoes) S.sugestoes = r.sugestoes;
+  if (r.documentos) S.docs = r.documentos;
+
+  // confirmar documento assinado marca o item: recarrega para a tela não mentir
+  if (r.marcouChecklist) {
+    const resp = await pedir('dados');
+    if (resp && resp.ok) {
+      S.cols = resp.dados.colaboradores;
+      S.checklist = resp.dados.checklist;
+      S.docs = resp.dados.documentos || {};
+      S.sugestoes = resp.dados.sugestoes || [];
+    }
+  }
+
+  pintar();
+  if (S.aberto) desenharFicha();
+  avisar(r.rotulo || 'Pronto.');
+  if (r.aviso) setTimeout(() => avisar(r.aviso), 2800);
+}
+
+/** Na ficha: o que existe no Drive, o que falta e o que está pendente de assinatura. */
+function blocoDocumentos(c){
+  const s = el('div','secao');
+  const lista = S.docs[c.Id] || [];
+  s.appendChild(el('h3', null, 'Documentos no Drive' + (lista.length ? ' — ' + lista.length : '')));
+
+  if (!lista.length) {
+    const f = el('div','faixa mini');
+    f.textContent = c.PastaDrive
+      ? 'A pasta está vinculada, mas nenhum arquivo foi mapeado ainda. Rode o mapearDocumentos.'
+      : 'Nenhuma pasta do Drive vinculada a esta pessoa ainda.';
+    s.appendChild(f);
+    return s;
+  }
+
+  const pendentes = lista.filter(a => a.estado === 'recebido' && a.codigo);
+  if (pendentes.length) {
+    const f = el('div','faixa aviso');
+    f.innerHTML = '<b>' + pendentes.length + ' documento(s) recebido(s) da contabilidade ' +
+      'sem assinatura.</b> Não contam como entregues: ' +
+      pendentes.map(a => esc(a.codigo + ' ' + nomeItem(a.codigo))).join(' · ');
+    s.appendChild(f);
+  }
+
+  const ul = el('ul','arquivos');
+  lista.forEach(a => {
+    const li = el('li');
+    li.appendChild(el('div','cod', a.codigo || '—'));
+
+    const meio = el('div','nome-arq');
+    meio.innerHTML = (a.link
+        ? '<a href="' + esc(a.link) + '" target="_blank" rel="noopener">' + esc(a.arquivo) + '</a>'
+        : esc(a.arquivo)) +
+      '<small>' + esc(a.subpasta) +
+        (a.codigo ? ' · ' + esc(nomeItem(a.codigo)) : ' · sem item no checklist') +
+        (a.olhar === 'grande demais' ? ' · arquivo grande, conferir à vista' : '') +
+      '</small>';
+    li.appendChild(meio);
+
+    li.appendChild(el('span','est ' + (a.estado || 'fora'), ESTADOS_DOC[a.estado] || a.estado || '—'));
+    ul.appendChild(li);
+  });
+  s.appendChild(ul);
+
+  // o que o checklist pede e não apareceu no Drive
+  const temItem = {};
+  lista.forEach(a => { if (a.codigo && a.estado !== 'recebido') temItem[a.codigo] = true; });
+  const faltando = itensDe(c).filter(it => !temItem[it.Codigo]);
+
+  if (faltando.length) {
+    const f = el('div','faixa mini');
+    f.innerHTML = '<b>Sem arquivo no Drive:</b> ' +
+      faltando.map(it => esc(it.Codigo)).join(' · ') +
+      '. Itens de sistema (ponto, Vobi, conta salário) não têm arquivo mesmo.';
+    s.appendChild(f);
+  }
   return s;
 }
 
