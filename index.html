@@ -2422,6 +2422,11 @@ function cartaoSugestao(s){
     };
     acoes.appendChild(b);
 
+    // quem entrou depois da planilha não está no cadastro: dá para criar aqui
+    const bNovo = el('button','bt sm','Cadastrar como novo');
+    bNovo.onclick = () => cadastrarPelaPasta(s);
+    acoes.appendChild(bNovo);
+
   } else {
     const b = el('button','bt pri sm', s.tipo === 'assinatura' ? 'Registrar recebimento' : 'Confirmar');
     b.onclick = () => decidirDoc({ op:'aceitar', id:s.id });
@@ -2452,6 +2457,68 @@ function cartaoSugestao(s){
   return d;
 }
 
+
+/**
+ * Cadastrar alguém que existe no Drive e não existe na Base. É o caso comum de
+ * quem foi contratado depois da planilha: a pasta está lá, a pessoa não.
+ * O que não for informado nasce em branco — ninguém carimba data que não conferiu.
+ */
+function cadastrarPelaPasta(s){
+  const meio = el('div');
+  const grade = el('div','form');
+
+  const nome = el('input'); nome.type = 'text';
+  nome.value = String(s.arquivo || '').replace(/^[\s0-9]+[-.\s]+/, '').trim();
+  grade.appendChild(campo('Nome completo', nome));
+
+  const obra = el('select');
+  const ops = opcoesDe('obras');
+  // a pasta veio de dentro de uma obra: já sugere essa
+  const codigo = (ops.find(o => norm(String(s.lotacao||'')).startsWith(norm(o.valor))) || {}).valor || '';
+  obra.innerHTML = '<option value="">—</option>' + ops.map(o =>
+    '<option value="' + esc(o.valor) + '"' + (o.valor === codigo ? ' selected' : '') + '>' +
+    esc(o.rotulo) + '</option>').join('');
+  grade.appendChild(campo('Obra', obra));
+
+  const cargo = el('select');
+  cargo.innerHTML = '<option value="">—</option>' + opcoesDe('funcoes').map(o =>
+    '<option value="' + esc(o.valor) + '">' + esc(o.rotulo) + '</option>').join('');
+  grade.appendChild(campo('Cargo', cargo));
+
+  const vinculo = el('input'); vinculo.type = 'text'; vinculo.setAttribute('list','dl-vinc-novo');
+  const dl = el('datalist'); dl.id = 'dl-vinc-novo';
+  dl.innerHTML = unicos('Vinculo').map(v => '<option value="' + esc(v) + '">').join('');
+  meio.appendChild(dl);
+  grade.appendChild(campo('Vínculo', vinculo));
+
+  const adm = el('input'); adm.type = 'date';
+  grade.appendChild(campo('Admissão (se souber)', adm));
+
+  meio.appendChild(grade);
+
+  const nota = el('div','faixa mini');
+  nota.innerHTML = 'Vai nascer um cadastro novo, <b>ativo</b>, com o checklist de ' +
+    'contratação aberto e a pasta do Drive já vinculada. O que ficar em branco segue ' +
+    'em branco: sem admissão, o tempo de empresa aparece como "sem admissão", e o ' +
+    'início no cargo fica para informar na ficha.';
+  meio.appendChild(nota);
+
+  const pasta = el('div','faixa mini aviso');
+  pasta.textContent = 'Pasta: ' + s.arquivo + (s.lotacao ? ' · em ' + s.lotacao : '');
+  meio.appendChild(pasta);
+
+  abrirModal('Cadastrar colaborador novo', meio, [
+    ['Cancelar','bt', fecharModal],
+    ['Cadastrar','bt pri', () => {
+      if (!nome.value.trim()) return avisar('Informe o nome.');
+      if (!obra.value) return avisar('Escolha a obra.');
+      fecharModal();
+      decidirDoc({ op:'criarColaborador', id:s.id, nome:nome.value.trim(), obra:obra.value,
+                   funcao:cargo.value, vinculo:vinculo.value.trim(), admissao:adm.value });
+    }]
+  ]);
+}
+
 async function decidirDoc(corpo){
   const r = await enviar('documento', { documento: corpo });
   if (!r || !r.ok) return avisar(r && r.erro || 'Não consegui registrar.');
@@ -2459,8 +2526,8 @@ async function decidirDoc(corpo){
   if (r.sugestoes) S.sugestoes = r.sugestoes;
   if (r.documentos) S.docs = r.documentos;
 
-  // confirmar documento assinado marca o item: recarrega para a tela não mentir
-  if (r.marcouChecklist) {
+  // marcar item ou criar colaborador muda a base: recarrega para a tela não mentir
+  if (r.marcouChecklist || r.recarregar) {
     const resp = await pedir('dados');
     if (resp && resp.ok) {
       S.cols = resp.dados.colaboradores;
