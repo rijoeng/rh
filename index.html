@@ -301,6 +301,91 @@ ol.hist small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
   #impresso .assin{margin-top:12mm;display:flex;gap:10mm}
   #impresso .assin div{flex:1;border-top:.75pt solid #000;padding-top:1.5mm;font-size:9pt;text-align:center}
 }
+
+/* ---------- filtros combinados ----------
+   Nomes novos conferidos com grep antes de usar: em página grande, classe
+   repetida herda o CSS da outra e some da tela. Foi o que aconteceu em 29/10,
+   quando os cartões do painel se chamaram ".painel" e herdaram a gaveta. */
+.barra .f.ativo{border-color:var(--accent-2);box-shadow:0 0 0 1px var(--accent-2) inset}
+.filtros-aplicados{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:0 0 12px;
+  font-size:12.5px;color:var(--ink-2)}
+.pilula{display:inline-flex;align-items:center;gap:6px;padding:3px 7px 3px 9px;border-radius:99px;
+  background:var(--accent-soft);color:var(--accent-ink);font-size:12px;font-weight:500;
+  border:1px solid transparent}
+.pilula button{border:0;background:none;color:inherit;font-size:14px;line-height:1;padding:0 2px;
+  border-radius:50%;opacity:.7}
+.pilula button:hover{opacity:1;background:rgba(0,0,0,.08)}
+.modal .caixa.amplo{width:min(820px,100%)}
+.grupo-filtros{margin-bottom:16px}
+.grupo-filtros>h4{font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 8px;padding-bottom:5px;
+  border-bottom:1px solid var(--line)}
+.faixa.mini{padding:8px 11px;font-size:12.5px}
+
+/* ---------- painel de indicadores ----------
+   .ind / .indicadores — nomes exclusivos desta página. */
+.indicadores{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));
+  gap:12px;margin-bottom:14px}
+.ind{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  box-shadow:var(--shadow);padding:13px 15px;min-height:92px}
+.ind h4{font-family:Archivo,sans-serif;font-size:10.5px;font-weight:600;letter-spacing:.07em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 6px}
+.ind .numero{font-family:Archivo,sans-serif;font-size:30px;font-weight:700;line-height:1.05;
+  font-variant-numeric:tabular-nums;color:var(--ink)}
+.ind .numero.alerta{color:var(--crit)}
+.ind .detalhe{margin-top:7px;font-size:12px;color:var(--ink-2);display:flex;flex-wrap:wrap;gap:4px 8px}
+.ind.largura-total{grid-column:1/-1}
+
+.barras{display:flex;flex-direction:column;gap:7px;margin-top:4px}
+.barra-item{display:grid;grid-template-columns:minmax(72px,28%) 1fr auto;gap:10px;align-items:center;
+  font-size:12.5px}
+.barra-item .rot{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.barra-item .trilha{height:9px;border-radius:5px;background:var(--surface-3);overflow:hidden}
+.barra-item .trilha i{display:block;height:100%;background:var(--accent-2);border-radius:5px}
+.barra-item .trilha i.saida{background:var(--grey)}
+.barra-item .qt{font-variant-numeric:tabular-nums;color:var(--ink);font-weight:600;min-width:28px;
+  text-align:right}
+.ind .nota{margin-top:9px;font-size:11.5px;color:var(--ink-3);line-height:1.45}
+
+/* ---------- cargo e experiência na ficha ---------- */
+.faixa-cargo{display:flex;flex-wrap:wrap;gap:6px 18px;padding:11px 14px;border-radius:var(--r);
+  background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--accent-2);
+  margin-bottom:16px}
+.faixa-cargo div{min-width:0}
+.faixa-cargo .rot{font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;
+  font-family:Archivo,sans-serif;font-weight:600}
+.faixa-cargo .val{font-size:13.5px;font-weight:600}
+.faixa-cargo .val.na{font-weight:400;color:var(--ink-3);font-style:italic}
+
+ol.periodos{list-style:none;margin:0;padding:0}
+ol.periodos li{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;
+  padding:9px 0;border-bottom:1px solid var(--line)}
+ol.periodos li:last-child{border-bottom:0}
+ol.periodos b{font-weight:600;font-size:13px}
+ol.periodos small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
+ol.periodos .agora{background:var(--good-bg);color:var(--good);padding:1px 7px;border-radius:99px;
+  font-size:11px;font-weight:600;margin-left:6px}
+
+.exp-fase{border:1px solid var(--line);border-radius:var(--r-sm);padding:10px 12px;margin-bottom:7px;
+  background:var(--surface)}
+.exp-fase.vencendo{border-left:3px solid var(--warn-dot)}
+.exp-fase.vencida{border-left:3px solid var(--crit)}
+.exp-fase.fechada{background:var(--surface-2)}
+.exp-fase .cab{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.exp-fase .cab b{font-size:13px;font-weight:600}
+.exp-fase .cab .prazo{font-size:12.5px;color:var(--ink-2);font-variant-numeric:tabular-nums}
+.exp-fase small{display:block;color:var(--ink-3);font-size:12px;margin-top:3px}
+.acoes-linha{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.marca-exp{display:inline-block;margin-left:6px;padding:1px 6px;border-radius:4px;
+  background:var(--warn-bg);color:var(--warn);font-size:10.5px;font-weight:700;
+  letter-spacing:.04em;text-transform:uppercase}
+.marca-exp.vencida{background:var(--crit-bg);color:var(--crit)}
+
+.trilha.dupla{height:auto;background:none;display:flex;flex-direction:column;gap:3px}
+.trilha.dupla span{display:block;height:7px;border-radius:4px;background:var(--surface-3);overflow:hidden}
+.trilha.dupla span i{display:block;height:100%;border-radius:4px;background:var(--accent-2)}
+.trilha.dupla span i.saida{background:var(--grey)}
+.barra-item .qt .entrou{color:var(--accent-ink)}
 </style>
 </head>
 <body>
@@ -327,6 +412,7 @@ ol.hist small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
       <button data-aba="pessoas" class="on"><span class="ic" aria-hidden="true">👥</span>Pessoas <span class="cnt" id="nPessoas"></span></button>
       <button data-aba="pendencias"><span class="ic" aria-hidden="true">⚠️</span>Pendências <span class="cnt alerta" id="nPend"></span></button>
       <button data-aba="obras"><span class="ic" aria-hidden="true">🏗️</span>Por obra</button>
+      <button data-aba="painel"><span class="ic" aria-hidden="true">📊</span>Painel</button>
     </nav>
   </div>
 </header>
@@ -361,7 +447,7 @@ ol.hist small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
 
 <div class="modal" id="modal" role="dialog" aria-modal="true">
   <div class="fundo" id="modalFundo"></div>
-  <div class="caixa">
+  <div class="caixa" id="modalCaixa">
     <header>
       <h3 id="modalTit"></h3>
       <div class="cresce"></div>
@@ -374,7 +460,8 @@ ol.hist small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
 
 <script>
 /* =========================== estado =========================== */
-const S = { usuario:null, cols:[], checklist:{}, movs:{}, itens:[], cadastros:{},
+const S = { usuario:null, cols:[], checklist:{}, movs:{}, cargos:{}, exp:{}, itens:[],
+            cadastros:{}, config:{},
             aba:'pessoas', filtros:{}, ordem:{campo:'Nome', dir:1},
             aberto:null, editando:false };
 
@@ -398,6 +485,7 @@ async function pedir(acao, extra){
   const r = await fetch(u, { method:'GET' });
   return r.json();
 }
+
 async function enviar(acao, corpo){
   const r = await fetch(API, {
     method:'POST',
@@ -432,6 +520,9 @@ async function enviar(acao, corpo){
   S.itens     = r.dados.itens;
   S.cadastros = r.dados.cadastros;
   S.movs      = r.dados.movimentacoes || {};
+  S.cargos    = r.dados.cargos || {};
+  S.exp       = r.dados.experiencia || {};
+  S.config    = r.dados.config || {};
 
   $('#quem').innerHTML = '<span class="dot"></span><b>' + esc(S.usuario.nome) + '</b> · ' + esc(S.usuario.perfil);
   $('#quem').hidden = false;
@@ -494,91 +585,501 @@ function criticosAbertos(col){
     String(i.Critico).toLowerCase() === 'sim' && !(m[i.Codigo] && m[i.Codigo].feito));
 }
 
+/* ====================== contagem de tempo ======================
+   Regra aprovada em APIVobi07-regra-de-contagem.md: um mês se completa no
+   mesmo dia do mês seguinte; quando esse dia não existe, vale o último dia
+   do mês. Não é "mês de 30 dias". */
+
+function diasEntre(aIso, bIso){
+  const a = Date.UTC(+aIso.slice(0,4), +aIso.slice(5,7)-1, +aIso.slice(8,10));
+  const b = Date.UTC(+bIso.slice(0,4), +bIso.slice(5,7)-1, +bIso.slice(8,10));
+  return Math.round((b - a) / 86400000);
+}
+
+function tempoEntre(iniIso, fimIso){
+  const ini = isoDe(iniIso), fim = isoDe(fimIso);
+  if (!ini || !fim || fim < ini) return null;
+
+  let anos  = +fim.slice(0,4) - +ini.slice(0,4);
+  let meses = +fim.slice(5,7) - +ini.slice(5,7);
+  let dias  = +fim.slice(8,10) - +ini.slice(8,10);
+
+  if (dias < 0) {
+    meses--;
+    // dias do mês anterior ao de destino — é daqui que sai o "último dia do mês"
+    const mAnterior = new Date(Date.UTC(+fim.slice(0,4), +fim.slice(5,7)-1, 0)).getUTCDate();
+    dias += mAnterior;
+  }
+  if (meses < 0) { anos--; meses += 12; }
+
+  return { anos, meses, dias, totalMeses: anos*12 + meses, totalDias: diasEntre(ini, fim) };
+}
+
+function textoTempo(t){
+  if (!t) return '';
+  const p = [];
+  if (t.anos)  p.push(t.anos + (t.anos === 1 ? ' ano' : ' anos'));
+  if (t.meses) p.push(t.meses + (t.meses === 1 ? ' mês' : ' meses'));
+  if (!t.anos && !t.meses) p.push(t.dias + (t.dias === 1 ? ' dia' : ' dias'));
+  else if (t.dias && !t.anos) p.push(t.dias + (t.dias === 1 ? ' dia' : ' dias'));
+  return p.join(' e ');
+}
+
+/** Ativo, de férias ou afastado conta até hoje. Desligado para na data da saída. */
+function fimDaContagem(c){
+  const desl = isoDe(c.Desligamento);
+  if (norm(c.Situacao) === 'desligado' && desl) return desl;
+  return hojeIso();
+}
+
+function tempoDeEmpresa(c){
+  const adm = isoDe(c.Admissao);
+  if (!adm) return null;
+  return tempoEntre(adm, fimDaContagem(c));
+}
+
+/* -------------------------- história de cargo -------------------------- */
+
+function periodosDe(c){ return S.cargos[c.Id] || []; }
+
+function cargoAberto(c){
+  return periodosDe(c).find(p => !p.fim) || null;
+}
+
+/** Sem data de início não se mostra número nenhum — chutar a admissão mentiria. */
+function tempoNoCargo(c){
+  const p = cargoAberto(c);
+  if (!p || !p.inicio) return null;
+  return tempoEntre(p.inicio, fimDaContagem(c));
+}
+
+function inicioNoCargo(c){
+  const p = cargoAberto(c);
+  return p && p.inicio ? p.inicio : '';
+}
+
+/* ------------------------ contrato de experiência ------------------------ */
+
+function vinculosComExperiencia(){
+  return String(S.config.ExpVinculos || 'CLT').split(',')
+    .map(s => s.trim()).filter(Boolean);
+}
+
+function alertasExp(){
+  return String(S.config.ExpAlertas || '15,7,3').split(',')
+    .map(s => Number(s.trim())).filter(n => n > 0).sort((a,b) => b-a);
+}
+
+function temExperiencia(c){
+  const v = vinculosComExperiencia().map(norm);
+  return !v.length || v.includes(norm(c.Vinculo));
+}
+
+function fasesDe(c){ return S.exp[c.Id] || []; }
+
+function faseAberta(c){
+  return fasesDe(c).find(f => norm(f.status) === 'em andamento') || null;
+}
+
+/**
+ * O estado do contrato desta pessoa. Nunca presume prazo: sem contrato
+ * registrado, devolve registrado:false e ponto — não calcula nada a partir
+ * da admissão.
+ */
+function estadoExp(c){
+  const fases = fasesDe(c);
+  const aberta = faseAberta(c);
+  const elegivel = temExperiencia(c);
+  const encerrada = fases.find(f => ['efetivado','encerrado'].includes(norm(f.status)));
+
+  if (!fases.length) {
+    return { registrado:false, elegivel, nivel:'sem', rotulo: elegivel
+      ? 'Contrato de experiência não registrado'
+      : 'Vínculo sem contrato de experiência' };
+  }
+  if (!aberta) {
+    return { registrado:true, elegivel, nivel:'fechado', fases,
+      rotulo: encerrada && norm(encerrada.status) === 'efetivado'
+        ? 'Efetivado' : 'Contrato encerrado' };
+  }
+
+  const dias = aberta.fim ? diasEntre(hojeIso(), aberta.fim) : null;
+  let nivel = 'ok';
+  if (dias === null) nivel = 'sem-fim';
+  else if (dias < 0)  nivel = 'vencida';
+  else if (dias === 0) nivel = 'hoje';
+  else if (dias <= (alertasExp()[0] || 15)) nivel = 'vencendo';
+
+  return { registrado:true, elegivel, fases, aberta, dias, nivel,
+           rotulo: nivel === 'vencida' ? 'Experiência vencida'
+                 : nivel === 'hoje'    ? 'Experiência vence hoje'
+                 : nivel === 'sem-fim' ? 'Contrato sem data de fim'
+                 : 'Em experiência' };
+}
+
+/** Pendência de experiência: o que o RH precisa olhar hoje. */
+function pendenciaExp(c){
+  if (norm(c.Situacao) === 'desligado') return null;
+  const e = estadoExp(c);
+  if (!e.registrado || !e.aberta) return null;
+  if (['vencida','hoje','vencendo','sem-fim'].includes(e.nivel)) {
+    const tratada = !!String(e.aberta.tratativa || '').trim();
+    if (e.nivel === 'vencida' && tratada) return null;   // tratativa anotada sai do alerta
+    return e;
+  }
+  return null;
+}
+
 /* =========================== telas =========================== */
 function pintar(){
-  const ativos = S.cols.filter(c => String(c.Situacao).toLowerCase() !== 'desligado');
+  const ativos = S.cols.filter(c => norm(c.Situacao) !== 'desligado');
   $('#nPessoas').textContent = S.cols.length;
-  $('#nPend').textContent = ativos.filter(c => criticosAbertos(c).length).length;
+  $('#nPend').textContent =
+    ativos.filter(c => criticosAbertos(c).length).length +
+    ativos.filter(c => pendenciaExp(c)).length;
 
   if (S.aba === 'pessoas')    return telaPessoas();
   if (S.aba === 'pendencias') return telaPendencias();
   if (S.aba === 'obras')      return telaObras();
+  if (S.aba === 'painel')     return telaPainel();
 }
 
 function unicos(campo){
   return [...new Set(S.cols.map(c => String(c[campo]||'').trim()).filter(Boolean))].sort();
 }
 
+/* ----------------------------- filtros ----------------------------- */
+
+const FAIXAS_TEMPO = [
+  ['ate3',  'Até 3 meses',        t => t && t.totalMeses < 3],
+  ['3a12',  'De 3 a 12 meses',    t => t && t.totalMeses >= 3  && t.totalMeses < 12],
+  ['1a3',   'De 1 a 3 anos',      t => t && t.totalMeses >= 12 && t.totalMeses < 36],
+  ['mais3', 'Mais de 3 anos',     t => t && t.totalMeses >= 36],
+  ['semdata','Sem data informada', t => !t]
+];
+
+const MESES = ['janeiro','fevereiro','março','abril','maio','junho',
+               'julho','agosto','setembro','outubro','novembro','dezembro'];
+
+const FILTROS_EXP = [
+  ['em',       'Em experiência'],
+  ['vencendo', 'Vencendo'],
+  ['hoje',     'Vence hoje'],
+  ['vencida',  'Vencida sem tratativa'],
+  ['sem',      'Sem contrato registrado'],
+  ['fora',     'Fora da experiência']
+];
+
+function filtroExpBate(c, v){
+  const e = estadoExp(c);
+  if (v === 'em')   return !!e.aberta;
+  if (v === 'sem')  return e.elegivel && !e.registrado;
+  if (v === 'fora') return !e.aberta;
+  if (v === 'vencida') return e.nivel === 'vencida' && !String((e.aberta||{}).tratativa||'').trim();
+  return e.nivel === v;
+}
+
+function valorNum(v){
+  if (v == null || String(v).trim() === '') return null;
+  let t = String(v).replace(/R\$/g,'').replace(/\s/g,'').trim();
+  if (t.indexOf(',') !== -1)              t = t.replace(/\./g,'').replace(',','.');
+  else if (/^\d{1,3}(\.\d{3})+$/.test(t)) t = t.replace(/\./g,'');
+  const n = Number(t);
+  return isNaN(n) ? null : n;
+}
+
+/** Cada filtro: chave, rótulo curto para a pílula, e o teste. */
+function testesDeFiltro(){
+  const f = S.filtros;
+  return [
+    ['q',        'Busca', c => norm([c.Nome,c.Funcao,c.ObraAtual,c.Vinculo,c.Empreiteiro,c.Matricula,c.Gestor].join(' ')).includes(norm(f.q))],
+    ['situacao', 'Situação', c => norm(c.Situacao) === norm(f.situacao)],
+    ['obra',     'Obra', c => c.ObraAtual === f.obra],
+    ['area',     'Área', c => c.Area === f.area],
+    ['exp',      'Experiência', c => filtroExpBate(c, f.exp)],
+    ['pend',     'Documentação', c =>
+        f.pend === 'criticos'   ? criticosAbertos(c).length > 0 :
+        f.pend === 'incompleto' ? progresso(c).pct < 100 :
+        f.pend === 'completo'   ? progresso(c).pct >= 100 : true],
+    ['empresa',  'Empresa', c => c.Empresa === f.empresa],
+    ['centro',   'Centro de custo', c => c.CentroCusto === f.centro],
+    ['setor',    'Setor', c => c.Setor === f.setor],
+    ['gestor',   'Gestor', c => c.Gestor === f.gestor],
+    ['funcao',   'Cargo', c => c.Funcao === f.funcao],
+    ['vinculo',  'Vínculo', c => c.Vinculo === f.vinculo],
+    ['anoAdm',   'Ano de admissão', c => isoDe(c.Admissao).slice(0,4) === String(f.anoAdm)],
+    ['mesAdm',   'Mês de admissão', c => isoDe(c.Admissao).slice(5,7) === String(f.mesAdm)],
+    ['admDe',    'Admitido a partir de', c => isoDe(c.Admissao) && isoDe(c.Admissao) >= f.admDe],
+    ['admAte',   'Admitido até', c => isoDe(c.Admissao) && isoDe(c.Admissao) <= f.admAte],
+    ['deslDe',   'Desligado a partir de', c => isoDe(c.Desligamento) && isoDe(c.Desligamento) >= f.deslDe],
+    ['deslAte',  'Desligado até', c => isoDe(c.Desligamento) && isoDe(c.Desligamento) <= f.deslAte],
+    ['tempoEmp', 'Tempo de empresa', c => (FAIXAS_TEMPO.find(x => x[0] === f.tempoEmp)||[])[2](tempoDeEmpresa(c))],
+    ['tempoCar', 'Tempo no cargo', c => (FAIXAS_TEMPO.find(x => x[0] === f.tempoCar)||[])[2](tempoNoCargo(c))],
+    ['baseSal',  'Base do salário', c => norm(c.BaseSalario) === norm(f.baseSal)],
+    ['salDe',    'Salário a partir de', c => valorNum(c.Salario) !== null && valorNum(c.Salario) >= valorNum(f.salDe)],
+    ['salAte',   'Salário até', c => valorNum(c.Salario) !== null && valorNum(c.Salario) <= valorNum(f.salAte)]
+  ];
+}
+
+function filtrosAtivos(){
+  const f = S.filtros;
+  return testesDeFiltro().filter(([k]) => String(f[k] == null ? '' : f[k]).trim() !== '');
+}
+
+function filtrar(){
+  const f = S.filtros;
+  const ativos = filtrosAtivos();
+
+  let r = S.cols.filter(c => ativos.every(([,,teste]) => {
+    try { return teste(c); } catch(e) { return true; }
+  }));
+
+  const k = S.ordem.campo, d = S.ordem.dir;
+  r.sort((a,b) => {
+    if (k === '_doc')   return (progresso(a).pct - progresso(b).pct) * d;
+    if (k === '_tempo') return (num(tempoDeEmpresa(a)) - num(tempoDeEmpresa(b))) * d;
+    if (k === '_cargo') return (num(tempoNoCargo(a)) - num(tempoNoCargo(b))) * d;
+    if (k === '_exp')   return (fimExp(a) - fimExp(b)) * d;
+    if (k === 'Admissao') return String(isoDe(a.Admissao)).localeCompare(String(isoDe(b.Admissao))) * d;
+    return String(a[k]||'').localeCompare(String(b[k]||''), 'pt-BR') * d;
+  });
+  return r;
+
+  function num(t){ return t ? t.totalDias : -1; }
+  function fimExp(c){
+    const e = faseAberta(c);
+    return e && e.fim ? Number(e.fim.replace(/-/g,'')) : 99999999;
+  }
+}
+
+const ORDENS = [
+  ['Nome','Nome'], ['Admissao','Admissão'], ['_tempo','Tempo de empresa'],
+  ['Funcao','Cargo'], ['_cargo','Tempo no cargo'],
+  ['_exp','Vencimento da experiência'], ['_doc','Documentação']
+];
+
 function telaPessoas(){
   const m = $('#main');
   m.innerHTML = '';
-
-  const barra = el('div','barra');
-  barra.innerHTML =
-    '<div class="busca"><span class="lupa">⌕</span>' +
-    '<input id="q" type="search" placeholder="Buscar por nome, função, obra…" value="' + esc(S.filtros.q||'') + '"></div>';
-
-  const filtros = [
-    ['situacao','Situação', ['ativo','afastado','ferias','desligado']],
-    ['obra','Obra', unicos('ObraAtual')],
-    ['vinculo','Vínculo', unicos('Vinculo')],
-    ['funcao','Função', unicos('Funcao')]
-  ];
-  filtros.forEach(([k,rotulo,ops]) => {
-    const s = el('select','f');
-    s.innerHTML = '<option value="">' + rotulo + ': todas</option>' +
-      ops.map(o => '<option' + (S.filtros[k]===o?' selected':'') + '>' + esc(o) + '</option>').join('');
-    s.onchange = () => { S.filtros[k] = s.value; telaPessoas(); };
-    barra.appendChild(s);
-  });
-
-  const sPend = el('select','f');
-  sPend.innerHTML = '<option value="">Documentação: tudo</option>' +
-    '<option value="criticos"' + (S.filtros.pend==='criticos'?' selected':'') + '>Com pendência crítica</option>' +
-    '<option value="incompleto"' + (S.filtros.pend==='incompleto'?' selected':'') + '>Checklist incompleto</option>' +
-    '<option value="completo"' + (S.filtros.pend==='completo'?' selected':'') + '>Checklist completo</option>';
-  sPend.onchange = () => { S.filtros.pend = sPend.value; telaPessoas(); };
-  barra.appendChild(sPend);
-
-  m.appendChild(barra);
-  barra.querySelector('#q').oninput = e => {
-    S.filtros.q = e.target.value;
-    clearTimeout(telaPessoas._t);
-    telaPessoas._t = setTimeout(() => { const p = e.target.selectionStart; telaPessoas();
-      const n = $('#q'); if (n) { n.focus(); n.setSelectionRange(p,p); } }, 180);
-  };
+  m.appendChild(barraDeFiltros(telaPessoas));
+  m.appendChild(linhaDeFiltros(telaPessoas));
 
   const lista = filtrar();
   m.appendChild(tabela(lista, [
-    ['Nome','Nome', c => '<span class="nome">' + esc(c.Nome) + '</span>'],
-    ['Funcao','Função', c => esc(c.Funcao)],
-    ['ObraAtual','Obra', c => esc(c.ObraAtual) + (c.CentroCusto ? ' <span class="chip">' + esc(c.CentroCusto.replace('ADM - Escritório - ','')) + '</span>' : '')],
-    ['Vinculo','Vínculo', c => '<span class="chip">' + esc(c.Vinculo) + '</span>'],
+    ['Nome','Nome', c => '<span class="nome">' + esc(c.Nome) + '</span>' + marcaExp(c) +
+      (c.Matricula ? ' <span class="chip">' + esc(c.Matricula) + '</span>' : '')],
+    ['Funcao','Cargo', c => esc(c.Funcao) + (c.Area ? '<br><small class="dim">' + esc(c.Area) + '</small>' : '')],
+    ['_cargo','No cargo desde', c => {
+      const ini = inicioNoCargo(c);
+      if (!ini) return '<span class="dim">não informado</span>';
+      const t = tempoNoCargo(c);
+      return dataBr(ini) + (t ? '<br><small class="dim">' + esc(textoTempo(t)) + '</small>' : '');
+    }],
+    ['ObraAtual','Obra', c => esc(c.ObraAtual) + (c.CentroCusto ? ' <span class="chip">' + esc(String(c.CentroCusto).replace('ADM - Escritório - ','')) + '</span>' : '')],
+    ['_tempo','Tempo de empresa', c => {
+      const t = tempoDeEmpresa(c);
+      if (!t) return '<span class="dim">sem admissão</span>';
+      return esc(textoTempo(t)) + '<br><small class="dim">desde ' + dataBr(c.Admissao) + '</small>';
+    }],
     ['Situacao','Situação', c => etiqueta(c.Situacao)],
     ['_doc','Documentação', c => medidor(c)]
   ]));
 }
 
-function filtrar(){
-  const f = S.filtros, q = norm(f.q);
-  let r = S.cols.filter(c => {
-    if (f.situacao && norm(c.Situacao) !== norm(f.situacao)) return false;
-    if (f.obra && c.ObraAtual !== f.obra) return false;
-    if (f.vinculo && c.Vinculo !== f.vinculo) return false;
-    if (f.funcao && c.Funcao !== f.funcao) return false;
-    if (f.pend === 'criticos'   && !criticosAbertos(c).length) return false;
-    if (f.pend === 'incompleto' && progresso(c).pct >= 100) return false;
-    if (f.pend === 'completo'   && progresso(c).pct < 100) return false;
-    if (q && !norm([c.Nome,c.Funcao,c.ObraAtual,c.Vinculo,c.Empreiteiro].join(' ')).includes(q)) return false;
-    return true;
+function marcaExp(c){
+  const e = estadoExp(c);
+  if (!e.aberta) return '';
+  if (e.nivel === 'vencida') return '<span class="marca-exp vencida">exp vencida</span>';
+  if (e.nivel === 'hoje' || e.nivel === 'vencendo') return '<span class="marca-exp">exp</span>';
+  return '';
+}
+
+/** Barra rápida: o que se usa todo dia. O resto vai para "Mais filtros". */
+function barraDeFiltros(redesenhar){
+  const barra = el('div','barra');
+  barra.innerHTML =
+    '<div class="busca"><span class="lupa">⌕</span>' +
+    '<input id="q" type="search" placeholder="Buscar por nome, matrícula, cargo, obra…" value="' + esc(S.filtros.q||'') + '"></div>';
+
+  const rapidos = [
+    ['situacao','Situação', ['ativo','afastado','ferias','desligado'], null],
+    ['obra','Obra', unicos('ObraAtual'), null],
+    ['area','Área', unicos('Area'), null],
+    ['exp','Experiência', FILTROS_EXP.map(x => x[0]), v => (FILTROS_EXP.find(x => x[0]===v)||[])[1] || v]
+  ];
+
+  rapidos.forEach(([k,rotulo,ops,nome]) => {
+    const s = el('select','f' + (S.filtros[k] ? ' ativo' : ''));
+    s.innerHTML = '<option value="">' + rotulo + ': todas</option>' +
+      ops.map(o => '<option value="' + esc(o) + '"' + (S.filtros[k]===o?' selected':'') + '>' +
+        esc(nome ? nome(o) : o) + '</option>').join('');
+    s.onchange = () => { S.filtros[k] = s.value; redesenhar(); };
+    barra.appendChild(s);
   });
 
-  const k = S.ordem.campo, d = S.ordem.dir;
-  r.sort((a,b) => {
-    if (k === '_doc') return (progresso(a).pct - progresso(b).pct) * d;
-    return String(a[k]||'').localeCompare(String(b[k]||''), 'pt-BR') * d;
+  const sPend = el('select','f' + (S.filtros.pend ? ' ativo' : ''));
+  sPend.innerHTML = '<option value="">Documentação: tudo</option>' +
+    '<option value="criticos"' + (S.filtros.pend==='criticos'?' selected':'') + '>Com pendência crítica</option>' +
+    '<option value="incompleto"' + (S.filtros.pend==='incompleto'?' selected':'') + '>Checklist incompleto</option>' +
+    '<option value="completo"' + (S.filtros.pend==='completo'?' selected':'') + '>Checklist completo</option>';
+  sPend.onchange = () => { S.filtros.pend = sPend.value; redesenhar(); };
+  barra.appendChild(sPend);
+
+  const bMais = el('button','bt', 'Mais filtros');
+  const extras = filtrosAtivos().filter(([k]) => !['q','situacao','obra','area','exp','pend'].includes(k)).length;
+  if (extras) bMais.textContent = 'Mais filtros (' + extras + ')';
+  bMais.onclick = () => abrirMaisFiltros(redesenhar);
+  barra.appendChild(bMais);
+
+  const sOrd = el('select','f');
+  sOrd.innerHTML = ORDENS.map(([k,r]) =>
+    '<option value="' + k + '"' + (S.ordem.campo===k?' selected':'') + '>Ordenar: ' + esc(r) + '</option>').join('');
+  sOrd.onchange = () => { S.ordem = { campo:sOrd.value, dir:1 }; redesenhar(); };
+  barra.appendChild(sOrd);
+
+  setTimeout(() => {
+    const q = barra.querySelector('#q');
+    if (!q) return;
+    q.oninput = e => {
+      S.filtros.q = e.target.value;
+      clearTimeout(barraDeFiltros._t);
+      barraDeFiltros._t = setTimeout(() => {
+        const p = e.target.selectionStart; redesenhar();
+        const n = $('#q'); if (n) { n.focus(); n.setSelectionRange(p,p); }
+      }, 180);
+    };
+  }, 0);
+
+  return barra;
+}
+
+function linhaDeFiltros(redesenhar){
+  const ativos = filtrosAtivos();
+  const linha = el('div','filtros-aplicados');
+  const n = filtrar().length;
+
+  linha.appendChild(el('span', null, n + (n === 1 ? ' pessoa' : ' pessoas') +
+    (ativos.length ? ' · filtros:' : ' · sem filtro')));
+
+  ativos.forEach(([k,rotulo]) => {
+    const p = el('span','pilula');
+    p.appendChild(el('span', null, rotulo + ': ' + valorLegivel(k, S.filtros[k])));
+    const x = el('button', null, '×');
+    x.title = 'Tirar este filtro';
+    x.onclick = () => { delete S.filtros[k]; redesenhar(); };
+    p.appendChild(x);
+    linha.appendChild(p);
   });
-  return r;
+
+  if (ativos.length) {
+    const b = el('button','bt sm','Limpar filtros');
+    b.onclick = () => { S.filtros = {}; redesenhar(); };
+    linha.appendChild(b);
+  }
+  return linha;
+}
+
+function valorLegivel(k, v){
+  if (k === 'exp')      return (FILTROS_EXP.find(x => x[0]===v)||[])[1] || v;
+  if (k === 'mesAdm')   return MESES[Number(v)-1] || v;
+  if (k === 'tempoEmp' || k === 'tempoCar') return (FAIXAS_TEMPO.find(x => x[0]===v)||[])[1] || v;
+  if (['admDe','admAte','deslDe','deslAte'].includes(k)) return dataBr(v);
+  if (k === 'pend')     return ({criticos:'com pendência crítica', incompleto:'incompleto', completo:'completo'})[v] || v;
+  return String(v);
+}
+
+function abrirMaisFiltros(redesenhar){
+  const meio = el('div');
+  const rascunho = Object.assign({}, S.filtros);
+
+  const grupo = (titulo, campos) => {
+    const g = el('div','grupo-filtros');
+    g.appendChild(el('h4', null, titulo));
+    const grade = el('div','form');
+    campos.forEach(n => grade.appendChild(n));
+    g.appendChild(grade);
+    return g;
+  };
+
+  const sel = (chave, rotulo, opcoes, nome) => {
+    const s = el('select');
+    s.innerHTML = '<option value="">— todas —</option>' +
+      opcoes.map(o => '<option value="' + esc(o) + '"' + (rascunho[chave]===String(o)?' selected':'') + '>' +
+        esc(nome ? nome(o) : o) + '</option>').join('');
+    s.onchange = () => { rascunho[chave] = s.value; };
+    return campo(rotulo, s);
+  };
+
+  const data = (chave, rotulo) => {
+    const i = el('input'); i.type = 'date'; i.value = rascunho[chave] || '';
+    i.onchange = () => { rascunho[chave] = i.value; };
+    return campo(rotulo, i);
+  };
+
+  const texto = (chave, rotulo, place) => {
+    const i = el('input'); i.type = 'text'; i.value = rascunho[chave] || '';
+    if (place) i.placeholder = place;
+    i.oninput = () => { rascunho[chave] = i.value; };
+    return campo(rotulo, i);
+  };
+
+  const anos = [...new Set(S.cols.map(c => isoDe(c.Admissao).slice(0,4)).filter(Boolean))].sort().reverse();
+
+  meio.appendChild(grupo('Onde trabalha', [
+    sel('empresa','Empresa', unicos('Empresa')),
+    sel('centro','Centro de custo', unicos('CentroCusto')),
+    sel('setor','Setor', unicos('Setor')),
+    sel('gestor','Gestor', unicos('Gestor')),
+    sel('funcao','Cargo', unicos('Funcao')),
+    sel('vinculo','Vínculo', unicos('Vinculo'))
+  ]));
+
+  const campoAno = sel('anoAdm','Ano de admissão', anos);
+  campoAno.appendChild(el('small','dim','vazio = todos os anos'));
+
+  meio.appendChild(grupo('Quando entrou e quando saiu', [
+    campoAno,
+    sel('mesAdm','Mês de admissão', ['01','02','03','04','05','06','07','08','09','10','11','12'],
+        v => MESES[Number(v)-1]),
+    data('admDe','Admitido a partir de'),
+    data('admAte','Admitido até'),
+    data('deslDe','Desligado a partir de'),
+    data('deslAte','Desligado até')
+  ]));
+
+  meio.appendChild(grupo('Tempo', [
+    sel('tempoEmp','Tempo de empresa', FAIXAS_TEMPO.map(f => f[0]), v => (FAIXAS_TEMPO.find(x=>x[0]===v)||[])[1]),
+    sel('tempoCar','Tempo no cargo', FAIXAS_TEMPO.map(f => f[0]), v => (FAIXAS_TEMPO.find(x=>x[0]===v)||[])[1])
+  ]));
+
+  if (S.usuario.perfil === 'rh') {
+    const g = grupo('Remuneração', [
+      sel('baseSal','Base', ['mensal','diaria','hora']),
+      texto('salDe','Salário a partir de', 'ex.: 1500'),
+      texto('salAte','Salário até', 'ex.: 3000')
+    ]);
+    const aviso = el('div','faixa mini aviso');
+    aviso.textContent = 'Filtre a faixa junto com a base. Comparar mensal com diária na ' +
+      'mesma faixa não quer dizer nada.';
+    g.appendChild(aviso);
+    meio.appendChild(g);
+  }
+
+  abrirModal('Mais filtros', meio, [
+    ['Limpar estes', 'bt', () => {
+      ['empresa','centro','setor','gestor','funcao','vinculo','anoAdm','mesAdm',
+       'admDe','admAte','deslDe','deslAte','tempoEmp','tempoCar','baseSal','salDe','salAte']
+        .forEach(k => delete S.filtros[k]);
+      fecharModal(); redesenhar();
+    }],
+    ['Aplicar', 'bt pri', () => {
+      Object.keys(rascunho).forEach(k => {
+        if (String(rascunho[k] == null ? '' : rascunho[k]).trim() === '') delete S.filtros[k];
+        else S.filtros[k] = rascunho[k];
+      });
+      fecharModal(); redesenhar();
+    }]
+  ], true);
 }
 
 function tabela(lista, colunas){
@@ -621,29 +1122,74 @@ function medidor(c){
     (crit ? ' <span class="chip alerta">' + crit + ' crítico' + (crit>1?'s':'') + '</span>' : '') + '</div>';
 }
 
+/* ------------------------- pendências ------------------------- */
+/**
+ * Duas seções, e a experiência vem primeiro: documento atrasado se resolve
+ * amanhã, prazo de experiência vencido não volta atrás.
+ */
 function telaPendencias(){
   const m = $('#main'); m.innerHTML = '';
-  const lista = S.cols
-    .filter(c => criticosAbertos(c).length)
-    .sort((a,b) => criticosAbertos(b).length - criticosAbertos(a).length);
 
-  if (!lista.length) {
-    m.appendChild(el('div','faixa','Nenhuma pendência crítica. Documentação em dia.'));
+  const ativos = S.cols.filter(c => norm(c.Situacao) !== 'desligado');
+  const exp = ativos.map(c => ({ c, e: pendenciaExp(c) })).filter(x => x.e);
+  const ordemNivel = { vencida:0, hoje:1, 'sem-fim':2, vencendo:3 };
+  exp.sort((a,b) => {
+    const d = (ordemNivel[a.e.nivel] ?? 9) - (ordemNivel[b.e.nivel] ?? 9);
+    if (d) return d;
+    return String((a.e.aberta||{}).fim||'').localeCompare(String((b.e.aberta||{}).fim||''));
+  });
+
+  const doc = ativos.filter(c => criticosAbertos(c).length)
+                    .sort((a,b) => criticosAbertos(b).length - criticosAbertos(a).length);
+
+  if (!exp.length && !doc.length) {
+    m.appendChild(el('div','faixa','Nenhuma pendência. Experiência e documentação em dia.'));
     return;
   }
 
-  m.appendChild(el('div','faixa aviso',
-    lista.length + ' pessoa(s) trabalhando com documento crítico em falta.'));
+  /* --- 1. experiência --- */
+  const s1 = el('div','secao');
+  s1.appendChild(el('h3', null, 'Contrato de experiência — ' + exp.length));
+  if (!exp.length) {
+    s1.appendChild(el('div','vazio','Nenhum prazo de experiência a tratar.'));
+  } else {
+    const q = el('div','quadro'); const rolo = el('div','rolo'); const t = el('table');
+    t.innerHTML = '<thead><tr><th>Nome</th><th>Obra</th><th>Fase</th><th>Termina</th><th>Situação do prazo</th></tr></thead><tbody>' +
+      exp.map(({c,e}) => {
+        const f = e.aberta || {};
+        const quanto = e.dias === null ? 'sem data de fim'
+                     : e.dias < 0 ? 'venceu há ' + Math.abs(e.dias) + ' dia(s)'
+                     : e.dias === 0 ? 'vence hoje'
+                     : 'faltam ' + e.dias + ' dia(s)';
+        return '<tr data-id="' + esc(c.Id) + '"><td class="nome">' + esc(c.Nome) + '</td>' +
+          '<td>' + esc(c.ObraAtual || '—') + '</td>' +
+          '<td>' + (f.fase === 2 ? 'prorrogação' : 'inicial') + ' · ' + esc(String(f.dias||'')) + ' dias</td>' +
+          '<td>' + esc(f.fim ? dataBr(f.fim) : '—') + '</td>' +
+          '<td><span class="chip' + (e.nivel === 'vencida' || e.nivel === 'hoje' ? ' alerta' : '') + '">' +
+            esc(quanto) + '</span></td></tr>';
+      }).join('') + '</tbody>';
+    t.querySelectorAll('tbody tr').forEach(tr => tr.onclick = () => abrirFicha(tr.dataset.id));
+    rolo.appendChild(t); q.appendChild(rolo); s1.appendChild(q);
+  }
+  m.appendChild(s1);
 
-  const q = el('div','quadro'); const rolo = el('div','rolo'); const t = el('table');
-  t.innerHTML = '<thead><tr><th>Nome</th><th>Obra</th><th>Vínculo</th><th>O que falta</th></tr></thead><tbody>' +
-    lista.map(c => '<tr data-id="' + esc(c.Id) + '"><td class="nome">' + esc(c.Nome) + '</td>' +
-      '<td>' + esc(c.ObraAtual) + '</td><td><span class="chip">' + esc(c.Vinculo) + '</span></td>' +
-      '<td>' + criticosAbertos(c).map(i =>
-          '<span class="chip alerta" style="margin:1px 3px 1px 0">' + esc(i.Codigo + ' ' + i.Item.split('—')[0].trim()) + '</span>'
-        ).join('') + '</td></tr>').join('') + '</tbody>';
-  t.querySelectorAll('tbody tr').forEach(tr => tr.onclick = () => abrirFicha(tr.dataset.id));
-  rolo.appendChild(t); q.appendChild(rolo); m.appendChild(q);
+  /* --- 2. documentação --- */
+  const s2 = el('div','secao');
+  s2.appendChild(el('h3', null, 'Documentação crítica — ' + doc.length));
+  if (!doc.length) {
+    s2.appendChild(el('div','vazio','Nenhuma pendência crítica de documentação.'));
+  } else {
+    const q = el('div','quadro'); const rolo = el('div','rolo'); const t = el('table');
+    t.innerHTML = '<thead><tr><th>Nome</th><th>Obra</th><th>Vínculo</th><th>O que falta</th></tr></thead><tbody>' +
+      doc.map(c => '<tr data-id="' + esc(c.Id) + '"><td class="nome">' + esc(c.Nome) + '</td>' +
+        '<td>' + esc(c.ObraAtual) + '</td><td><span class="chip">' + esc(c.Vinculo) + '</span></td>' +
+        '<td>' + criticosAbertos(c).map(i =>
+            '<span class="chip alerta" style="margin:1px 3px 1px 0">' + esc(i.Codigo + ' ' + String(i.Item).split('—')[0].trim()) + '</span>'
+          ).join('') + '</td></tr>').join('') + '</tbody>';
+    t.querySelectorAll('tbody tr').forEach(tr => tr.onclick = () => abrirFicha(tr.dataset.id));
+    rolo.appendChild(t); q.appendChild(rolo); s2.appendChild(q);
+  }
+  m.appendChild(s2);
 }
 
 function telaObras(){
@@ -677,6 +1223,207 @@ function telaObras(){
   });
 }
 
+/* =========================== painel ===========================
+   Usa EXATAMENTE os mesmos filtros da lista. Painel e lista nunca contam
+   coisas diferentes — era esse o pedido. */
+function telaPainel(){
+  const m = $('#main'); m.innerHTML = '';
+  m.appendChild(barraDeFiltros(telaPainel));
+  m.appendChild(linhaDeFiltros(telaPainel));
+
+  const lista = filtrar();
+  if (!lista.length) {
+    m.appendChild(el('div','vazio','Ninguém com esses filtros.'));
+    return;
+  }
+
+  const abertos    = lista.filter(c => norm(c.Situacao) !== 'desligado');
+  const desligados = lista.filter(c => norm(c.Situacao) === 'desligado');
+  const porSituacao = contar(abertos, c => norm(c.Situacao) || '—');
+  const emExp      = abertos.filter(c => faseAberta(c));
+  const critica    = abertos.filter(c => criticosAbertos(c).length);
+
+  const topo = el('div','indicadores');
+  topo.appendChild(cartaoNumero('Vínculos em aberto', abertos.length,
+    Object.entries(porSituacao).sort((a,b)=>b[1]-a[1])
+      .map(([k,v]) => '<span class="chip">' + esc(k) + ' ' + v + '</span>').join(' ')));
+  topo.appendChild(cartaoNumero('Em experiência', emExp.length,
+    (() => {
+      const venc = emExp.filter(c => ['vencendo','hoje','vencida'].includes(estadoExp(c).nivel)).length;
+      return venc ? '<span class="chip alerta">' + venc + ' vencendo ou vencida</span>'
+                  : '<span class="chip">nenhuma vencendo</span>';
+    })()));
+  topo.appendChild(cartaoNumero('Documentação crítica', critica.length,
+    '<span class="chip">de ' + abertos.length + ' em aberto</span>', critica.length > 0));
+  topo.appendChild(cartaoNumero('Desligados no recorte', desligados.length,
+    '<span class="chip">' + (lista.length ? Math.round(desligados.length*100/lista.length) : 0) + '% do recorte</span>'));
+  m.appendChild(topo);
+
+  const grade = el('div','indicadores');
+  grade.appendChild(cartaoBarras('Por obra',    contar(abertos, c => c.ObraAtual || '(sem obra)')));
+  grade.appendChild(cartaoBarras('Por área',    contar(abertos, c => c.Area || '(sem área)')));
+  grade.appendChild(cartaoBarras('Por empresa', contar(abertos, c => c.Empresa || '(sem empresa)')));
+  grade.appendChild(cartaoBarras('Por vínculo', contar(abertos, c => c.Vinculo || '(sem vínculo)')));
+  grade.appendChild(cartaoBarras('Por setor',   contar(abertos, c => c.Setor || '(sem setor)')));
+  grade.appendChild(cartaoBarras('Tempo de empresa', contarFaixas(abertos)));
+  m.appendChild(grade);
+
+  m.appendChild(cartaoMovimento(lista));
+
+  if (S.usuario.perfil === 'rh') m.appendChild(cartaoRemuneracao(abertos));
+}
+
+function contar(lista, chave){
+  const r = {};
+  lista.forEach(c => { const k = String(chave(c)); r[k] = (r[k]||0) + 1; });
+  return r;
+}
+
+function contarFaixas(lista){
+  const r = {};
+  FAIXAS_TEMPO.forEach(([,rotulo]) => { r[rotulo] = 0; });
+  lista.forEach(c => {
+    const t = tempoDeEmpresa(c);
+    const f = FAIXAS_TEMPO.find(x => x[2](t));
+    if (f) r[f[1]]++;
+  });
+  Object.keys(r).forEach(k => { if (!r[k]) delete r[k]; });
+  return r;
+}
+
+function cartaoNumero(titulo, numero, detalheHtml, alerta){
+  const c = el('div','ind');
+  c.appendChild(el('h4', null, titulo));
+  const n = el('div','numero' + (alerta ? ' alerta' : ''), String(numero));
+  c.appendChild(n);
+  if (detalheHtml) {
+    const d = el('div','detalhe');
+    d.innerHTML = detalheHtml;
+    c.appendChild(d);
+  }
+  return c;
+}
+
+function cartaoBarras(titulo, mapa, cls){
+  const c = el('div','ind');
+  c.appendChild(el('h4', null, titulo));
+
+  const pares = Object.entries(mapa).sort((a,b) => b[1]-a[1]).slice(0, 12);
+  if (!pares.length) { c.appendChild(el('div','dim','—')); return c; }
+
+  const maior = Math.max(...pares.map(p => p[1])) || 1;
+  const caixa = el('div','barras');
+  pares.forEach(([k,v]) => {
+    const li = el('div','barra-item');
+    const rot = el('div','rot', k); rot.title = k;
+    const tr = el('div','trilha');
+    const i = el('i', cls || null); i.style.width = Math.max(2, Math.round(v*100/maior)) + '%';
+    tr.appendChild(i);
+    li.appendChild(rot); li.appendChild(tr); li.appendChild(el('div','qt', String(v)));
+    caixa.appendChild(li);
+  });
+  c.appendChild(caixa);
+  return c;
+}
+
+/** Admissões e desligamentos mês a mês — sempre os últimos 12 meses. */
+function cartaoMovimento(lista){
+  const c = el('div','ind largura-total');
+  c.appendChild(el('h4', null, 'Admissões e desligamentos — últimos 12 meses'));
+
+  const meses = [];
+  const d = new Date();
+  for (let i = 11; i >= 0; i--) {
+    const x = new Date(d.getFullYear(), d.getMonth() - i, 1);
+    meses.push(x.getFullYear() + '-' + String(x.getMonth()+1).padStart(2,'0'));
+  }
+
+  const adm = {}, des = {};
+  meses.forEach(m => { adm[m] = 0; des[m] = 0; });
+  lista.forEach(p => {
+    const a = isoDe(p.Admissao).slice(0,7);
+    if (a in adm) adm[a]++;
+    const s = isoDe(p.Desligamento).slice(0,7);
+    if (s in des) des[s]++;
+  });
+
+  const maior = Math.max(1, ...meses.map(m => Math.max(adm[m], des[m])));
+  const caixa = el('div','barras');
+
+  meses.forEach(m => {
+    const rotulo = MESES[Number(m.slice(5,7))-1].slice(0,3) + '/' + m.slice(2,4);
+    const li = el('div','barra-item');
+    li.appendChild(el('div','rot', rotulo));
+
+    const tr = el('div','trilha dupla');
+    [['admissões', adm[m], ''], ['desligamentos', des[m], 'saida']].forEach(([nome, v, cls]) => {
+      const faixa = el('span');
+      const i = el('i', cls || null);
+      i.style.width = (v ? Math.max(4, Math.round(v*100/maior)) : 0) + '%';
+      i.title = rotulo + ' · ' + nome + ': ' + v;
+      faixa.appendChild(i);
+      tr.appendChild(faixa);
+    });
+    li.appendChild(tr);
+
+    const qt = el('div','qt');
+    qt.innerHTML = '<span class="entrou">' + adm[m] + '</span> / <span class="dim">' + des[m] + '</span>';
+    li.appendChild(qt);
+    caixa.appendChild(li);
+  });
+  c.appendChild(caixa);
+
+  const nota = el('div','nota');
+  nota.textContent = 'Em cada mês, a barra de cima é admissões e a de baixo, desligamentos ' +
+    '(o número à direita repete os dois). Esta janela é sempre de 12 meses — não acompanha ' +
+    'os filtros de intervalo de data.';
+  c.appendChild(nota);
+  return c;
+}
+
+/**
+ * Remuneração separada por base. Não existe soma geral de propósito:
+ * somar mensal com diária daria um número que não quer dizer nada.
+ */
+function cartaoRemuneracao(lista){
+  const c = el('div','ind largura-total');
+  c.appendChild(el('h4', null, 'Remuneração cadastrada, por base'));
+
+  const bases = {};
+  lista.forEach(p => {
+    const v = valorNum(p.Salario);
+    if (v === null) return;
+    const b = String(p.BaseSalario || '').trim() || 'base não informada';
+    (bases[b] = bases[b] || []).push(v);
+  });
+
+  const nomes = Object.keys(bases).sort();
+  if (!nomes.length) {
+    c.appendChild(el('div','dim','Nenhum salário cadastrado no recorte.'));
+    return c;
+  }
+
+  const rolo = el('div','rolo'); const t = el('table');
+  t.innerHTML = '<thead><tr><th>Base</th><th>Pessoas</th><th>Menor</th><th>Média</th><th>Maior</th></tr></thead><tbody>' +
+    nomes.map(b => {
+      const v = bases[b].slice().sort((x,y) => x-y);
+      const media = v.reduce((s,x) => s+x, 0) / v.length;
+      return '<tr><td>' + esc(b) + '</td><td class="num">' + v.length + '</td>' +
+        '<td class="num">' + dinheiro(v[0]) + '</td>' +
+        '<td class="num">' + dinheiro(media) + '</td>' +
+        '<td class="num">' + dinheiro(v[v.length-1]) + '</td></tr>';
+    }).join('') + '</tbody>';
+  rolo.appendChild(t);
+  rolo.querySelectorAll('tbody tr').forEach(tr => tr.style.cursor = 'default');
+  c.appendChild(rolo);
+
+  const nota = el('div','nota');
+  nota.textContent = 'Salário cadastrado não é custo de pessoal: não tem encargo, hora extra, ' +
+    'adicional nem desconto. Não há soma geral porque mensal, diária e hora não se somam.';
+  c.appendChild(nota);
+  return c;
+}
+
 /* =========================== ficha =========================== */
 function abrirFicha(id){
   const c = S.cols.find(x => x.Id === id);
@@ -695,7 +1442,8 @@ function desenharFicha(){
 
   $('#fichaNome').textContent = c.Nome;
   $('#fichaSub').innerHTML = esc(c.Funcao) + ' · ' + esc(c.ObraAtual || 'sem obra') +
-    (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + etiqueta(c.Situacao);
+    (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + etiqueta(c.Situacao) +
+    (Number(c.NumeroVinculo) > 1 ? ' <span class="chip">vínculo ' + esc(c.NumeroVinculo) + '</span>' : '');
   $('#fichaEstado').textContent = '';
 
   const corpo = $('#fichaCorpo');
@@ -703,7 +1451,10 @@ function desenharFicha(){
   if (S.editando) {
     corpo.appendChild(formDados(c));
   } else {
+    corpo.appendChild(faixaDeCargo(c));
     corpo.appendChild(blocoDados(c));
+    corpo.appendChild(blocoExperiencia(c));
+    corpo.appendChild(blocoCargos(c));
     corpo.appendChild(blocoHistorico(c));
     corpo.appendChild(blocoChecklist(c));
   }
@@ -726,19 +1477,48 @@ function fecharFicha(){
   S.editando = false;
 }
 
+/** Cargo atual, desde quando, tempo no cargo e tempo de empresa. */
+function faixaDeCargo(c){
+  const f = el('div','faixa-cargo');
+  const ini = inicioNoCargo(c);
+  const tc = tempoNoCargo(c);
+  const te = tempoDeEmpresa(c);
+
+  const bloco = (rot, val, na) => {
+    const d = el('div');
+    d.appendChild(el('div','rot', rot));
+    d.appendChild(el('div','val' + (na ? ' na' : ''), val));
+    return d;
+  };
+
+  f.appendChild(bloco('Cargo atual', c.Funcao || '—'));
+  f.appendChild(ini ? bloco('No cargo desde', dataBr(ini))
+                    : bloco('No cargo desde', 'não informado', true));
+  f.appendChild(tc ? bloco('Tempo no cargo', textoTempo(tc))
+                   : bloco('Tempo no cargo', 'depende da data de início', true));
+  f.appendChild(te ? bloco('Tempo de empresa', textoTempo(te))
+                   : bloco('Tempo de empresa', 'sem data de admissão', true));
+  if (c.Area)   f.appendChild(bloco('Área', c.Area));
+  if (c.Gestor) f.appendChild(bloco('Gestor', c.Gestor));
+  return f;
+}
+
 /* ----------------------- cadastro: só leitura ----------------------- */
 function blocoDados(c){
   const s = el('div','secao');
   s.appendChild(el('h3',null,'Cadastro'));
 
   const pares = [
-    ['CPF', c.CPF], ['Nascimento', dataBr(c.Nascimento)],
+    ['Matrícula', c.Matricula], ['CPF', c.CPF], ['Nascimento', dataBr(c.Nascimento)],
+    ['E-mail', c.Email],
     ['Vínculo', c.Vinculo], ['Empresa', nomeDe('empresas', c.Empresa)],
     ['Equipe', c.Equipe], ['Empreiteiro', c.Empreiteiro],
-    ['Setor', c.Setor], ['Centro de custo', c.CentroCusto],
+    ['Setor', c.Setor], ['Área', c.Area], ['Gestor', c.Gestor], ['Jornada', c.Jornada],
+    ['Centro de custo', c.CentroCusto],
     ['Admissão', dataBr(c.Admissao)], ['Início na obra', dataBr(c.InicioNaObra)],
     ['Desligamento', dataBr(c.Desligamento)], ['Motivo', c.MotivoDesligamento],
-    ['Salário', c.Salario ? dinheiro(c.Salario) : (S.usuario.perfil === 'rh' ? '' : 'restrito')],
+    ['Salário', c.Salario ? dinheiro(c.Salario) + (c.BaseSalario ? ' / ' + c.BaseSalario : '')
+                          : (S.usuario.perfil === 'rh' ? '' : 'restrito')],
     ['Adiantamento', c.RecebeAdiantamento],
     ['Alojado', c.Alojado], ['Alojamento', c.Alojamento],
     ['Telefone', c.Telefone], ['Emergência', c.ContatoEmergencia || c.TelEmergencia],
@@ -752,14 +1532,277 @@ function blocoDados(c){
     dl.appendChild(el('dd', vazio ? 'na' : null, vazio ? '—' : String(v)));
   });
   s.appendChild(dl);
+  return s;
+}
 
-  const exp = experiencia(c);
-  if (exp) {
-    const f = el('div','faixa'); f.style.marginTop = '12px';
-    f.innerHTML = exp;
+/* ------------------- contrato de experiência (ficha) ------------------- */
+function blocoExperiencia(c){
+  const s = el('div','secao');
+  const e = estadoExp(c);
+  s.appendChild(el('h3', null, 'Contrato de experiência'));
+
+  const rh = S.usuario.perfil === 'rh';
+
+  if (!e.registrado) {
+    const f = el('div','faixa');
+    f.innerHTML = '<b>' + esc(e.rotulo) + '.</b> ' + (e.elegivel
+      ? 'Nenhum prazo é presumido a partir da admissão — o que não foi registrado não existe aqui.'
+      : 'Pela Config, têm experiência os vínculos: ' + esc(String(S.config.ExpVinculos||'CLT')) + '.');
+    s.appendChild(f);
+
+    if (rh && e.elegivel && norm(c.Situacao) !== 'desligado') {
+      const acoes = el('div','acoes-linha');
+      const b = el('button','bt pri sm','Registrar contrato');
+      b.onclick = () => abrirContrato(c);
+      acoes.appendChild(b);
+      s.appendChild(acoes);
+    }
+    return s;
+  }
+
+  fasesDe(c).forEach(f => {
+    const aberta = norm(f.status) === 'em andamento';
+    const dias = aberta && f.fim ? diasEntre(hojeIso(), f.fim) : null;
+    const cls = !aberta ? 'fechada'
+              : dias === null ? ''
+              : dias < 0 ? 'vencida'
+              : dias <= (alertasExp()[0] || 15) ? 'vencendo' : '';
+
+    const bloco = el('div','exp-fase ' + cls);
+    const cab = el('div','cab');
+    cab.innerHTML = '<b>' + (f.fase === 2 ? 'Prorrogação' : 'Prazo inicial') + '</b>' +
+      '<span class="prazo">' + esc(dataBr(f.inicio)) + ' a ' + esc(f.fim ? dataBr(f.fim) : '—') +
+      ' · ' + esc(String(f.dias || '')) + ' dias</span>' +
+      '<span class="chip' + (cls === 'vencida' ? ' alerta' : '') + '">' + esc(f.status) + '</span>';
+    bloco.appendChild(cab);
+
+    const notas = [];
+    if (aberta && dias !== null) {
+      notas.push(dias < 0 ? 'venceu há ' + Math.abs(dias) + ' dia(s)'
+               : dias === 0 ? 'vence hoje'
+               : 'faltam ' + dias + ' dia(s)');
+    }
+    if (f.motivo)    notas.push(f.motivo);
+    if (f.tratativa) notas.push('tratativa: ' + f.tratativa);
+    if (f.por)       notas.push('registrado por ' + f.por);
+    if (notas.length) bloco.appendChild(el('small', null, notas.join(' · ')));
+
+    s.appendChild(bloco);
+  });
+
+  if (rh && e.aberta) {
+    const acoes = el('div','acoes-linha');
+    const botoes = [
+      ['Prorrogar', () => opContrato(c, 'prorrogar')],
+      ['Efetivar',  () => opContrato(c, 'efetivar')],
+      ['Encerrar',  () => opContrato(c, 'encerrar')],
+      ['Anotar tratativa', () => opContrato(c, 'tratar')]
+    ];
+    botoes.forEach(([rot, fn]) => {
+      const b = el('button','bt sm', rot);
+      b.onclick = fn;
+      acoes.appendChild(b);
+    });
+    s.appendChild(acoes);
+  }
+  return s;
+}
+
+function abrirContrato(c){
+  const meio = el('div');
+  const grade = el('div','form');
+
+  const dIni = el('input'); dIni.type = 'date';
+  dIni.value = isoDe(c.Admissao) || hojeIso();
+  grade.appendChild(campo('Início do contrato', dIni));
+
+  const dias = el('input'); dias.type = 'number'; dias.min = '1';
+  dias.value = String(S.config.ExpPrazo1 || 45);
+  grade.appendChild(campo('Prazo em dias', dias));
+
+  const obs = el('textarea');
+  grade.appendChild(campo('Observação', obs, true));
+  meio.appendChild(grade);
+
+  const nota = el('div','faixa mini');
+  nota.textContent = 'O dia do início conta como primeiro dia: ' +
+    (S.config.ExpPrazo1 || 45) + ' dias a partir de 10/03 terminam em 23/04.';
+  meio.appendChild(nota);
+
+  const fim = el('div','faixa mini aviso');
+  const recalcular = () => {
+    const f = fimDoPrazo(dIni.value, Number(dias.value||0));
+    fim.textContent = f ? 'Termina em ' + dataBr(f) + '.' : 'Informe início e prazo.';
+  };
+  dIni.onchange = recalcular; dias.oninput = recalcular; recalcular();
+  meio.appendChild(fim);
+
+  abrirModal('Registrar contrato · ' + c.Nome, meio, [
+    ['Cancelar','bt', fecharModal],
+    ['Registrar','bt pri', async () => {
+      await mandarContrato(c, { op:'abrir', inicio:dIni.value, dias:Number(dias.value||0),
+                                motivo:obs.value });
+    }]
+  ]);
+}
+
+function opContrato(c, op){
+  const e = estadoExp(c);
+  const f = e.aberta;
+  if (!f) return avisar('Não há contrato em andamento.');
+
+  const meio = el('div');
+  const grade = el('div','form');
+  const rotulos = { prorrogar:'Prorrogar', efetivar:'Efetivar', encerrar:'Encerrar',
+                    tratar:'Anotar tratativa' };
+
+  let dias = null, texto = null;
+
+  if (op === 'prorrogar') {
+    dias = el('input'); dias.type = 'number'; dias.min = '1';
+    dias.value = String(S.config.ExpPrazo2 || 45);
+    grade.appendChild(campo('Prazo da prorrogação, em dias', dias));
+  }
+
+  texto = el('textarea');
+  grade.appendChild(campo(op === 'tratar' ? 'O que ficou combinado (obrigatório)'
+                        : op === 'encerrar' ? 'Motivo (obrigatório)'
+                        : 'Observação', texto, true));
+  meio.appendChild(grade);
+
+  const resumo = el('div','faixa mini');
+  const atualiza = () => {
+    if (op === 'prorrogar') {
+      const ini = somarDias(f.fim, 1);
+      const fim = fimDoPrazo(ini, Number(dias.value||0));
+      resumo.textContent = 'A prorrogação vai de ' + dataBr(ini) + ' a ' + (fim ? dataBr(fim) : '—') +
+        ', começando no dia seguinte ao fim do prazo atual.';
+    } else if (op === 'efetivar') {
+      resumo.textContent = 'O contrato é fechado como efetivado. O cadastro não muda.';
+    } else if (op === 'encerrar') {
+      resumo.textContent = 'Encerrar fecha o contrato. NÃO desliga a pessoa: se ela saiu, ' +
+        'registre também o desligamento em Movimentar.';
+    } else {
+      resumo.textContent = 'A tratativa é anotada no contrato, sem decidir nada. ' +
+        'Um prazo vencido com tratativa sai da lista de alerta.';
+    }
+  };
+  if (dias) dias.oninput = atualiza;
+  atualiza();
+  meio.appendChild(resumo);
+
+  abrirModal(rotulos[op] + ' · ' + c.Nome, meio, [
+    ['Cancelar','bt', fecharModal],
+    ['Confirmar','bt pri', async () => {
+      const corpo = { op, motivo:texto.value, tratativa:texto.value };
+      if (dias) corpo.dias = Number(dias.value||0);
+      await mandarContrato(c, corpo);
+    }]
+  ]);
+}
+
+async function mandarContrato(c, corpo){
+  fecharModal();
+  $('#fichaEstado').textContent = 'gravando…';
+  const r = await enviar('contrato', { contrato: Object.assign({ idColaborador:c.Id }, corpo) });
+  $('#fichaEstado').textContent = '';
+  if (!r || !r.ok) return avisar(r && r.erro || 'Não consegui gravar.');
+
+  S.exp[c.Id] = r.experiencia || [];
+  desenharFicha();
+  pintar();
+  avisar(r.rotulo || 'Pronto.');
+  if (r.aviso) setTimeout(() => avisar(r.aviso), 2800);
+}
+
+/* --------------------- histórico de cargos (ficha) --------------------- */
+function blocoCargos(c){
+  const s = el('div','secao');
+  const lista = periodosDe(c);
+  s.appendChild(el('h3', null, 'Histórico de cargos' + (lista.length ? ' — ' + lista.length : '')));
+
+  if (!lista.length) {
+    s.appendChild(el('div','vazio','Nenhum período de cargo registrado.'));
+    return s;
+  }
+
+  const rh = S.usuario.perfil === 'rh';
+  const ol = el('ol','periodos');
+
+  lista.forEach(p => {
+    const li = el('li');
+    const d = el('div');
+
+    const b = el('b', null, p.cargo || '—');
+    d.appendChild(b);
+    if (!p.fim) {
+      const marca = el('span','agora','cargo de hoje');
+      d.appendChild(marca);
+    }
+
+    const partes = [];
+    if (p.inicio) partes.push('desde ' + dataBr(p.inicio));
+    else partes.push('data de início não informada');
+    if (p.fim) partes.push('até ' + dataBr(p.fim));
+    if (p.setor) partes.push(p.setor);
+    if (p.inicio) {
+      const t = tempoEntre(p.inicio, p.fim || fimDaContagem(c));
+      if (t) partes.push(textoTempo(t));
+    }
+    d.appendChild(el('small', null, partes.join(' · ')));
+    li.appendChild(d);
+
+    if (rh) {
+      const b2 = el('button','bt sm', p.inicio ? 'Ajustar datas' : 'Informar início');
+      b2.onclick = e => { e.stopPropagation(); ajustarPeriodo(c, p); };
+      li.appendChild(b2);
+    }
+    ol.appendChild(li);
+  });
+
+  s.appendChild(ol);
+
+  if (lista.some(p => !p.inicio)) {
+    const f = el('div','faixa mini');
+    f.textContent = 'Quem veio da planilha ficou sem data de início no cargo, de propósito: ' +
+      'admissão e início no cargo são coisas diferentes, e repetir a admissão produziria ' +
+      'um tempo de cargo errado com cara de certo.';
     s.appendChild(f);
   }
   return s;
+}
+
+function ajustarPeriodo(c, p){
+  const meio = el('div');
+  const grade = el('div','form');
+
+  const ini = el('input'); ini.type = 'date'; ini.value = p.inicio || '';
+  grade.appendChild(campo('Início no cargo', ini));
+
+  const fim = el('input'); fim.type = 'date'; fim.value = p.fim || '';
+  grade.appendChild(campo('Fim (vazio = cargo de hoje)', fim));
+
+  meio.appendChild(grade);
+
+  const nota = el('div','faixa mini');
+  nota.textContent = 'Isto corrige datas de um período que já existe. Mudança de cargo de ' +
+    'verdade é movimentação: fecha o período anterior na véspera e abre o novo.';
+  meio.appendChild(nota);
+
+  abrirModal('Datas do período · ' + (p.cargo || c.Nome), meio, [
+    ['Cancelar','bt', fecharModal],
+    ['Salvar','bt pri', async () => {
+      fecharModal();
+      $('#fichaEstado').textContent = 'salvando…';
+      const r = await enviar('ajustarCargo', {
+        cargo: { id:p.id, idColaborador:c.Id, inicio:ini.value, fim:fim.value } });
+      $('#fichaEstado').textContent = '';
+      if (!r || !r.ok) return avisar(r && r.erro || 'Não consegui salvar.');
+      S.cargos[c.Id] = r.cargos || [];
+      desenharFicha(); pintar();
+      avisar('Datas do cargo atualizadas.');
+    }]
+  ]);
 }
 
 /* -------------------------- cadastro: edição -------------------------- */
@@ -769,16 +1812,22 @@ function blocoDados(c){
  */
 const CAMPOS_FICHA = [
   ['Nome',               'Nome',                   'texto'],
+  ['Matricula',          'Matrícula',              'texto'],
   ['CPF',                'CPF',                    'texto'],
   ['Nascimento',         'Nascimento',             'data'],
-  ['Funcao',             'Função',                 'lista:funcoes'],
+  ['Email',              'E-mail',                 'texto'],
+  ['Funcao',             'Cargo',                  'lista:funcoes'],
   ['Setor',              'Setor',                  'sugere'],
+  ['Area',               'Área',                   'lista:areas'],
+  ['Gestor',             'Gestor',                 'sugere'],
+  ['Jornada',            'Jornada',                'sugere'],
   ['Vinculo',            'Vínculo',                'sugere'],
   ['Empresa',            'Empresa',                'lista:empresas'],
   ['Equipe',             'Equipe',                 'lista:equipes'],
   ['Empreiteiro',        'Empreiteiro',            'sugere'],
   ['Admissao',           'Admissão',               'data'],
   ['Salario',            'Salário',                'texto'],
+  ['BaseSalario',        'Base do salário',        'base'],
   ['RecebeAdiantamento', 'Recebe adiantamento',    'simnao'],
   ['Alojado',            'Alojado',                'simnao'],
   ['Alojamento',         'Alojamento',             'lista:alojamentos'],
@@ -795,7 +1844,8 @@ const LISTAS = {
   equipes:      { valor:'Nome',    rotulo:null,          ativo:'Ativa' },
   alojamentos:  { valor:'Nome',    rotulo:'Cidade',      ativo:'Ativo' },
   obras:        { valor:'Codigo',  rotulo:'Nome',        ativo:'Ativa' },
-  centrosCusto: { valor:'Codigo',  rotulo:'Nome',        ativo:'Ativo' }
+  centrosCusto: { valor:'Codigo',  rotulo:'Nome',        ativo:'Ativo' },
+  areas:        { valor:'Nome',    rotulo:null,          ativo:'Ativa' }
 };
 
 function opcoesDe(tabela, incluir){
@@ -851,6 +1901,12 @@ function formDados(c){
         .map(v => '<option value="' + v + '"' + (norm(atual) === norm(v) ? ' selected' : '') + '>' +
                   (v || '—') + '</option>').join('');
 
+    } else if (tipo === 'base') {
+      no = el('select');
+      no.innerHTML = ['', 'mensal', 'diaria', 'hora']
+        .map(v => '<option value="' + v + '"' + (norm(atual) === norm(v) ? ' selected' : '') + '>' +
+                  (v || '—') + '</option>').join('');
+
     } else if (tipo.indexOf('lista:') === 0) {
       const tabela = tipo.slice(6);
       no = el('select');
@@ -882,7 +1938,10 @@ function formDados(c){
     '<b>Obra, situação, centro de custo e desligamento não se editam aqui.</b><br>' +
     'Hoje: ' + esc(c.ObraAtual || 'sem obra') +
     (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + esc(c.Situacao) + '. ' +
-    'Para mudar, feche a edição e use <b>Movimentar</b> — assim fica registrado no histórico.';
+    'Para mudar, feche a edição e use <b>Movimentar</b> — assim fica registrado no histórico.' +
+    '<br><br><b>Corrigir o cargo aqui conserta o período aberto</b> no histórico de cargos. ' +
+    'Se a pessoa mudou de cargo de verdade, isso é movimentação: fecha o período anterior ' +
+    'na véspera e abre um novo.';
   grade.appendChild(travado);
 
   s.appendChild(grade);
@@ -912,7 +1971,16 @@ async function conferirESalvar(){
 
   if (!dif.length) { S.editando = false; desenharFicha(); return avisar('Nada mudou.'); }
 
-  abrirModal('Conferir alterações', tabelaDif(dif), [
+  const conf = el('div');
+  conf.appendChild(tabelaDif(dif));
+  if (dif.some(([k]) => k === 'Funcao' || k === 'Setor')) {
+    const f = el('div','faixa mini aviso');
+    f.textContent = 'Cargo ou setor mudou: isto vai ser tratado como CORREÇÃO e conserta o ' +
+      'período aberto no histórico. Se foi mudança de cargo de verdade, cancele e use Movimentar.';
+    conf.appendChild(f);
+  }
+
+  abrirModal('Conferir alterações', conf, [
     ['Voltar e corrigir', 'bt', fecharModal],
     ['Confirmar e salvar', 'bt pri', async () => {
       fecharModal();
@@ -920,6 +1988,7 @@ async function conferirESalvar(){
       const r = await enviar('salvar', { colaborador: Object.assign({ Id:c.Id }, novo) });
       if (!r || !r.ok) { $('#fichaEstado').textContent = ''; return avisar(r && r.erro || 'Não consegui salvar.'); }
       if (r.colaborador) trocarColaborador(r.colaborador);
+      if (r.cargos) S.cargos[c.Id] = r.cargos;
       S.editando = false;
       desenharFicha();
       pintar();
@@ -961,9 +2030,9 @@ const MOVIMENTACOES = {
     exige:['data','obraDestino'], rotuloData:'Data da transferência',
     aplica:(c,p) => ({ ObraAtual:p.obraDestino, CentroCusto:p.centroCusto || '', InicioNaObra:p.data }) },
 
-  funcao: { rotulo:'Mudança de função', campos:['data','funcao','setor','motivo'],
-    exige:['data','funcao'], rotuloData:'A partir de',
-    aplica:(c,p) => p.setor ? ({ Funcao:p.funcao, Setor:p.setor }) : ({ Funcao:p.funcao }) },
+  cargo: { rotulo:'Mudança de cargo', campos:['data','cargo','setor','motivo'],
+    exige:['data','cargo'], rotuloData:'A partir de',
+    aplica:(c,p) => p.setor ? ({ Funcao:p.cargo, Setor:p.setor }) : ({ Funcao:p.cargo }) },
 
   ferias: { rotulo:'Início de férias', campos:['data','motivo'],
     exige:['data'], rotuloData:'Primeiro dia de férias',
@@ -981,18 +2050,19 @@ const MOVIMENTACOES = {
     exige:['data','motivo'], rotuloData:'Último dia',
     aplica:(c,p) => ({ Situacao:'desligado', Desligamento:p.data, MotivoDesligamento:p.motivo }) },
 
-  recontratacao: { rotulo:'Recontratação', campos:['data','obraDestino','centroCusto','motivo'],
+  readmissao: { rotulo:'Readmissão', campos:['data','obraDestino','centroCusto','cargo','motivo'],
     exige:['data','obraDestino'], rotuloData:'Nova admissão',
-    aplica:(c,p) => ({ Situacao:'ativo', Admissao:p.data, InicioNaObra:p.data,
-                       ObraAtual:p.obraDestino, CentroCusto:p.centroCusto || '',
-                       Desligamento:'', MotivoDesligamento:'' }) }
+    aplica:() => ({}) }
 };
+
+/** Nomes antigos, que o histórico já gravou. */
+const APELIDOS_MOV = { funcao:'cargo', recontratacao:'readmissao' };
 
 function abrirMovimentacao(c){
   if (!c) return;
   const desligado = norm(c.Situacao) === 'desligado';
   const tipos = Object.keys(MOVIMENTACOES).filter(t =>
-    desligado ? ['recontratacao'].includes(t) : t !== 'recontratacao');
+    desligado ? t === 'readmissao' : t !== 'readmissao');
 
   const meio = el('div');
   const sel = el('select');
@@ -1002,9 +2072,21 @@ function abrirMovimentacao(c){
   const area = el('div','form'); area.style.marginTop = '12px';
   meio.appendChild(area);
 
+  const nota = el('div','faixa mini');
+  meio.appendChild(nota);
+
   const desenhar = () => {
     const r = MOVIMENTACOES[sel.value];
     area.innerHTML = '';
+
+    nota.textContent = sel.value === 'cargo'
+      ? 'Mudança de cargo fecha o período atual na véspera e abre um novo a partir desta data. ' +
+        'Para consertar um cargo digitado errado, use "Editar cadastro".'
+      : sel.value === 'readmissao'
+      ? 'Readmissão cria um VÍNCULO NOVO: ficha nova, checklist do zero, tempo de empresa ' +
+        'recomeçando. O vínculo anterior fica intacto, com o desligamento dele.'
+      : '';
+    nota.hidden = !nota.textContent;
 
     r.campos.forEach(k => {
       let no, rotulo = k, largo = false;
@@ -1025,12 +2107,12 @@ function abrirMovimentacao(c){
           '<option value="' + esc(o.valor) + '">' + esc(o.rotulo) + '</option>').join('');
         rotulo = 'Centro de custo';
 
-      } else if (k === 'funcao') {
+      } else if (k === 'cargo') {
         no = el('select');
         no.innerHTML = '<option value="">—</option>' + opcoesDe('funcoes', c.Funcao).map(o =>
           '<option value="' + esc(o.valor) + '"' + (o.valor === c.Funcao ? ' selected' : '') + '>' +
           esc(o.rotulo) + '</option>').join('');
-        rotulo = 'Nova função';
+        rotulo = sel.value === 'readmissao' ? 'Cargo no novo vínculo' : 'Novo cargo';
 
       } else if (k === 'setor') {
         no = el('input'); no.type = 'text'; no.value = c.Setor || '';
@@ -1058,18 +2140,38 @@ function abrirMovimentacao(c){
       const faltam = r.exige.filter(k => !p[k]);
       if (faltam.length) return avisar('Falta preencher: ' + faltam.map(rotuloMov).join(', ') + '.');
 
-      const depois = r.aplica(c, p);
-      const dif = Object.keys(depois)
-        .map(k => [k, String(c[k] == null ? '' : c[k]), String(depois[k])])
-        .filter(([,a,b]) => a !== b);
-
       const conf = el('div');
       const cab = el('div','faixa');
       cab.innerHTML = '<b>' + esc(r.rotulo) + '</b> · ' + esc(dataBr(p.data)) +
         (p.motivo ? '<br>' + esc(p.motivo) : '');
       conf.appendChild(cab);
-      conf.appendChild(dif.length ? tabelaDif(dif)
-                                  : el('div','vazio','O cadastro não muda — fica só o registro no histórico.'));
+
+      if (tipo === 'readmissao') {
+        const q = el('div','faixa aviso');
+        q.innerHTML = 'Vai nascer um <b>vínculo novo</b> para ' + esc(c.Nome) + ': obra ' +
+          esc(p.obraDestino) + ', admissão ' + esc(dataBr(p.data)) +
+          '. Documentação e tempo de empresa começam do zero. ' +
+          'O vínculo atual não é alterado.';
+        conf.appendChild(q);
+      } else {
+        const depois = r.aplica(c, p);
+        const dif = Object.keys(depois)
+          .map(k => [k, String(c[k] == null ? '' : c[k]), String(depois[k])])
+          .filter(([,a,b]) => a !== b);
+        conf.appendChild(dif.length ? tabelaDif(dif)
+                                    : el('div','vazio','O cadastro não muda — fica só o registro no histórico.'));
+      }
+
+      if (tipo === 'cargo') {
+        const atual = cargoAberto(c);
+        const f = el('div','faixa mini');
+        f.textContent = atual && atual.inicio
+          ? 'O período de ' + (atual.cargo || 'cargo') + ' será fechado em ' +
+            dataBr(somarDias(p.data, -1)) + ', e o novo começa em ' + dataBr(p.data) + '.'
+          : 'O período aberto será fechado em ' + dataBr(somarDias(p.data, -1)) +
+            ' e um novo começa em ' + dataBr(p.data) + '.';
+        conf.appendChild(f);
+      }
 
       abrirModal('Conferir movimentação', conf, [
         ['Voltar', 'bt', () => abrirMovimentacao(c)],
@@ -1078,11 +2180,24 @@ function abrirMovimentacao(c){
           $('#fichaEstado').textContent = 'registrando…';
           const resp = await enviar('movimentar', { movimentacao: p });
           if (!resp || !resp.ok) { $('#fichaEstado').textContent = ''; return avisar(resp && resp.erro || 'Não consegui registrar.'); }
+          $('#fichaEstado').textContent = '';
+
           if (resp.colaborador) trocarColaborador(resp.colaborador);
+          if (resp.cargos) S.cargos[c.Id] = resp.cargos;
           if (resp.movimentacao) {
             S.movs[c.Id] = S.movs[c.Id] || [];
             S.movs[c.Id].unshift(resp.movimentacao);
           }
+
+          if (resp.readmissao && resp.novoColaborador) {
+            S.cols.push(resp.novoColaborador);
+            if (resp.cargos) S.cargos[resp.novoColaborador.Id] = resp.cargos;
+            pintar();
+            avisar('Vínculo novo criado: ' + resp.idNovo);
+            abrirFicha(resp.novoColaborador.Id);
+            return;
+          }
+
           desenharFicha();
           pintar();
           avisar(resp.rotulo + ' registrada.');
@@ -1093,7 +2208,7 @@ function abrirMovimentacao(c){
 }
 
 function rotuloMov(k){
-  return ({ data:'data', obraDestino:'obra de destino', funcao:'função',
+  return ({ data:'data', obraDestino:'obra de destino', cargo:'cargo',
             motivo:'motivo', centroCusto:'centro de custo', setor:'setor' })[k] || k;
 }
 
@@ -1113,7 +2228,8 @@ function blocoHistorico(c){
     li.appendChild(el('div','quando', dataBr(m.data)));
 
     const d = el('div');
-    const r = MOVIMENTACOES[m.tipo];
+    const chave = APELIDOS_MOV[m.tipo] || m.tipo;
+    const r = MOVIMENTACOES[chave];
     d.appendChild(el('b', null, r ? r.rotulo : m.tipo));
 
     const partes = [];
@@ -1132,8 +2248,10 @@ function blocoHistorico(c){
 }
 
 /* ---------------------------- modal ---------------------------- */
-function abrirModal(titulo, conteudo, botoes){
+function abrirModal(titulo, conteudo, botoes, amplo){
   $('#modalTit').textContent = titulo;
+  $('#modalCaixa').classList.toggle('amplo', !!amplo);
+
   const meio = $('#modalMeio'); meio.innerHTML = ''; meio.appendChild(conteudo);
 
   const pe = $('#modalPe'); pe.innerHTML = '';
@@ -1152,26 +2270,6 @@ function fecharModal(){ $('#modal').classList.remove('on'); }
 function hojeIso(){
   const d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
-}
-
-/** Os dois marcos da planilha: admissão + 44 dias, e mais 45. */
-function experiencia(c){
-  if (!c.Admissao || c.Vinculo !== 'CLT') return '';
-  const iso = isoDe(c.Admissao);
-  if (!iso) return '';
-  const base = new Date(iso + 'T12:00:00');
-  if (isNaN(base)) return '';
-  const m1 = new Date(base); m1.setDate(m1.getDate() + 44);
-  const m2 = new Date(m1);   m2.setDate(m2.getDate() + 45);
-  const hoje = new Date();
-  const dias = d => Math.ceil((d - hoje) / 86400000);
-
-  let txt = 'Experiência: 1º marco ' + m1.toLocaleDateString('pt-BR') +
-            ' · 2º marco ' + m2.toLocaleDateString('pt-BR');
-  if (dias(m2) < 0) txt += ' — já passou, efetivado';
-  else if (dias(m1) >= 0) txt += ' — faltam ' + dias(m1) + ' dia(s) para o 1º';
-  else txt += ' — faltam ' + dias(m2) + ' dia(s) para o 2º';
-  return txt;
 }
 
 function blocoChecklist(c){
@@ -1215,7 +2313,7 @@ function blocoChecklist(c){
     linha.appendChild(txt);
 
     const quem = el('div','quem');
-    quem.textContent = est.feito && est.em ? dataBr(est.em.slice(0,10)) : '';
+    quem.textContent = est.feito && est.em ? dataBr(String(est.em).slice(0,10)) : '';
     quem.title = est.por || '';
     linha.appendChild(quem);
 
@@ -1298,13 +2396,14 @@ function imprimir(){
       '<span class="d"><b>' + esc(it.Codigo) + ')</b> ' + esc(it.Item) +
       (resp.length ? '<br><span style="font-size:8.5pt;color:#555">' + esc(resp.join(' · ')) + '</span>' : '') +
       '</span>' +
-      '<span class="r">' + (est.feito ? dataBr((est.em||'').slice(0,10)) + ' · ' + esc(est.por||'') : '____/____/______') + '</span>' +
+      '<span class="r">' + (est.feito ? dataBr(String(est.em||'').slice(0,10)) + ' · ' + esc(est.por||'') : '____/____/______') + '</span>' +
       '</div>';
   });
 
   $('#impresso').innerHTML =
     '<div class="cab"><h1>Checklist de Contratação</h1>' +
-    '<div class="linha"><b>' + esc(c.Nome) + '</b> · ' + esc(c.Funcao) + ' · ' + esc(c.Vinculo) + '</div>' +
+    '<div class="linha"><b>' + esc(c.Nome) + '</b> · ' + esc(c.Funcao) + ' · ' + esc(c.Vinculo) +
+      (c.Matricula ? ' · matrícula ' + esc(c.Matricula) : '') + '</div>' +
     '<div class="linha">Obra ' + esc(c.ObraAtual || '—') +
       (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') +
       (c.Admissao ? ' · admissão ' + dataBr(c.Admissao) : '') + '</div>' +
@@ -1339,6 +2438,22 @@ function dataBr(s){
   const [a,me,d] = iso.split('-');
   return d + '/' + me + '/' + a;
 }
+
+/** Soma dias em UTC, para não escorregar no fuso. */
+function somarDias(s, n){
+  const iso = isoDe(s);
+  if (!iso) return '';
+  const d = new Date(Date.UTC(+iso.slice(0,4), +iso.slice(5,7)-1, +iso.slice(8,10)));
+  d.setUTCDate(d.getUTCDate() + Number(n));
+  return d.getUTCFullYear() + '-' + d2(d.getUTCMonth()+1) + '-' + d2(d.getUTCDate());
+}
+
+/** O dia do início conta como primeiro dia: 45 dias de 10/03 terminam em 23/04. */
+function fimDoPrazo(inicio, dias){
+  if (!isoDe(inicio) || !dias || dias < 1) return '';
+  return somarDias(inicio, Number(dias) - 1);
+}
+
 /**
  * A base guarda salário como 1654.08 — ponto decimal, à moda do Sheets.
  * Mas alguém pode digitar 1.654,08. Os dois precisam dar o mesmo valor,
@@ -1346,6 +2461,8 @@ function dataBr(s){
  */
 function dinheiro(v){
   if (v == null || String(v).trim() === '') return '';
+  if (typeof v === 'number') return v.toLocaleString('pt-BR', { style:'currency', currency:'BRL' });
+
   let t = String(v).replace(/R\$/g,'').replace(/\s/g,'').trim();
 
   if (t.indexOf(',') !== -1)                 t = t.replace(/\./g,'').replace(',','.');
