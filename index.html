@@ -324,7 +324,7 @@ ol.hist small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
 
 /* ---------- painel de indicadores ----------
    .ind / .indicadores — nomes exclusivos desta página. */
-.indicadores{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr));
+.indicadores{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));
   gap:12px;margin-bottom:14px}
 .ind{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
   box-shadow:var(--shadow);padding:13px 15px;min-height:92px}
@@ -337,7 +337,7 @@ ol.hist small{display:block;color:var(--ink-3);font-size:12px;margin-top:1px}
 .ind.largura-total{grid-column:1/-1}
 
 .barras{display:flex;flex-direction:column;gap:7px;margin-top:4px}
-.barra-item{display:grid;grid-template-columns:minmax(72px,28%) 1fr auto;gap:10px;align-items:center;
+.barra-item{display:grid;grid-template-columns:minmax(120px,46%) 1fr auto;gap:10px;align-items:center;
   font-size:12.5px}
 .barra-item .rot{color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .barra-item .trilha{height:9px;border-radius:5px;background:var(--surface-3);overflow:hidden}
@@ -837,7 +837,7 @@ function valorNum(v){
 function testesDeFiltro(){
   const f = S.filtros;
   return [
-    ['q',        'Busca', c => norm([c.Nome,c.Funcao,c.ObraAtual,c.Vinculo,c.Empreiteiro,c.Matricula,c.Gestor].join(' ')).includes(norm(f.q))],
+    ['q',        'Busca', c => norm([c.Nome,c.Funcao,c.ObraAtual,nomeObra(c.ObraAtual),c.Vinculo,c.Empreiteiro,c.Matricula,c.Gestor].join(' ')).includes(norm(f.q))],
     ['situacao', 'Situação', c => norm(c.Situacao) === norm(f.situacao)],
     ['obra',     'Obra', c => c.ObraAtual === f.obra],
     ['area',     'Área', c => c.Area === f.area],
@@ -920,7 +920,7 @@ function telaPessoas(){
       const t = tempoNoCargo(c);
       return dataBr(ini) + (t ? '<br><small class="dim">' + esc(textoTempo(t)) + '</small>' : '');
     }],
-    ['ObraAtual','Obra', c => esc(c.ObraAtual) + (c.CentroCusto ? ' <span class="chip">' + esc(String(c.CentroCusto).replace('ADM - Escritório - ','')) + '</span>' : '')],
+    ['ObraAtual','Obra', c => esc(nomeObra(c.ObraAtual)) + (c.CentroCusto ? ' <span class="chip">' + esc(nomeCentro(c.CentroCusto)) + '</span>' : '')],
     ['_tempo','Tempo de empresa', c => {
       const t = tempoDeEmpresa(c);
       if (!t) return '<span class="dim">sem admissão</span>';
@@ -948,7 +948,7 @@ function barraDeFiltros(redesenhar){
 
   const rapidos = [
     ['situacao','Situação', ['ativo','afastado','ferias','desligado'], null],
-    ['obra','Obra', unicos('ObraAtual'), null],
+    ['obra','Obra', unicos('ObraAtual'), nomeObra],
     ['area','Área', unicos('Area'), null],
     ['exp','Experiência', FILTROS_EXP.map(x => x[0]), v => (FILTROS_EXP.find(x => x[0]===v)||[])[1] || v]
   ];
@@ -1025,6 +1025,7 @@ function linhaDeFiltros(redesenhar){
 }
 
 function valorLegivel(k, v){
+  if (k === 'obra')    return nomeObra(v);
   if (k === 'exp')      return (FILTROS_EXP.find(x => x[0]===v)||[])[1] || v;
   if (k === 'mesAdm')   return MESES[Number(v)-1] || v;
   if (k === 'tempoEmp' || k === 'tempoCar') return (FAIXAS_TEMPO.find(x => x[0]===v)||[])[1] || v;
@@ -1227,7 +1228,7 @@ function telaPendencias(){
     const q = el('div','quadro'); const rolo = el('div','rolo'); const t = el('table');
     t.innerHTML = '<thead><tr><th>Nome</th><th>Obra</th><th>Vínculo</th><th>O que falta</th></tr></thead><tbody>' +
       doc.map(c => '<tr data-id="' + esc(c.Id) + '"><td class="nome">' + esc(c.Nome) + '</td>' +
-        '<td>' + esc(c.ObraAtual) + '</td><td><span class="chip">' + esc(c.Vinculo) + '</span></td>' +
+        '<td>' + esc(nomeObra(c.ObraAtual)) + '</td><td><span class="chip">' + esc(c.Vinculo) + '</span></td>' +
         '<td>' + criticosAbertos(c).map(i =>
             '<span class="chip alerta" style="margin:1px 3px 1px 0">' + esc(i.Codigo + ' ' + String(i.Item).split('—')[0].trim()) + '</span>'
           ).join('') + '</td></tr>').join('') + '</tbody>';
@@ -1241,7 +1242,7 @@ function telaObras(){
   const m = $('#main'); m.innerHTML = '';
   const por = {};
   S.cols.filter(c => norm(c.Situacao) !== 'desligado').forEach(c => {
-    const o = c.ObraAtual || '(sem obra)';
+    const o = nomeObra(c.ObraAtual) || '(sem obra)';
     (por[o] = por[o] || []).push(c);
   });
 
@@ -1305,7 +1306,7 @@ function telaPainel(){
   m.appendChild(topo);
 
   const grade = el('div','indicadores');
-  grade.appendChild(cartaoBarras('Por obra',    contar(abertos, c => c.ObraAtual || '(sem obra)')));
+  grade.appendChild(cartaoBarras('Por obra',    contar(abertos, c => nomeObra(c.ObraAtual) || '(sem obra)')));
   grade.appendChild(cartaoBarras('Por área',    contar(abertos, c => c.Area || '(sem área)')));
   grade.appendChild(cartaoBarras('Por empresa', contar(abertos, c => c.Empresa || '(sem empresa)')));
   grade.appendChild(cartaoBarras('Por vínculo', contar(abertos, c => c.Vinculo || '(sem vínculo)')));
@@ -1486,7 +1487,7 @@ function desenharFicha(){
   if (!c) return;
 
   $('#fichaNome').textContent = c.Nome;
-  $('#fichaSub').innerHTML = esc(c.Funcao) + ' · ' + esc(c.ObraAtual || 'sem obra') +
+  $('#fichaSub').innerHTML = esc(c.Funcao) + ' · ' + esc(nomeObra(c.ObraAtual) || 'sem obra') +
     (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + etiqueta(c.Situacao) +
     (Number(c.NumeroVinculo) > 1 ? ' <span class="chip">vínculo ' + esc(c.NumeroVinculo) + '</span>' : '');
   $('#fichaEstado').textContent = '';
@@ -1884,6 +1885,35 @@ const CAMPOS_FICHA = [
 ];
 
 /** De onde cada lista sai, e como se chama o que vale e o que aparece. */
+
+/** Nome da obra como esta cadastrado na Vobi (CODIGO | Nome). Nunca so o codigo. */
+function nomeObra(valor){
+  const v = (valor == null ? '' : String(valor)).trim();
+  if (!v) return '';
+  const lista = (S.cadastros && S.cadastros.obras) || [];
+  const o = lista.find(l => String(l.Codigo == null ? '' : l.Codigo).trim() === v);
+  const n = o && o.Nome != null ? String(o.Nome).trim() : '';
+  return n || v;
+}
+
+/** Centro de custo pelo nome cadastrado, sem cortar prefixo. */
+function nomeCentro(valor){
+  const v = (valor == null ? '' : String(valor)).trim();
+  if (!v) return '';
+  const lista = (S.cadastros && S.cadastros.centrosCusto) || [];
+  const o = lista.find(l => String(l.Codigo == null ? '' : l.Codigo).trim() === v);
+  const n = o && o.Nome != null ? String(o.Nome).trim() : '';
+  return n || v;
+}
+
+/** Valor de campo de cadastro, do jeito que aparece para quem le. */
+function valorDeCampo(chave, v){
+  const s = (v == null ? '' : String(v));
+  if (chave === 'ObraAtual')   return nomeObra(s) || s;
+  if (chave === 'CentroCusto') return nomeCentro(s) || s;
+  return s;
+}
+
 const LISTAS = {
   funcoes:      { valor:'Funcao',  rotulo:null,          ativo:'Ativa' },
   empresas:     { valor:'Codigo',  rotulo:'Apelido',     ativo:'Ativa' },
@@ -1982,7 +2012,7 @@ function formDados(c){
   const travado = el('div','travado');
   travado.innerHTML =
     '<b>Obra, situação, centro de custo e desligamento não se editam aqui.</b><br>' +
-    'Hoje: ' + esc(c.ObraAtual || 'sem obra') +
+    'Hoje: ' + esc(nomeObra(c.ObraAtual) || 'sem obra') +
     (c.CentroCusto ? ' · ' + esc(c.CentroCusto) : '') + ' · ' + esc(c.Situacao) + '. ' +
     'Para mudar, feche a edição e use <b>Movimentar</b> — assim fica registrado no histórico.' +
     '<br><br><b>Corrigir o cargo aqui conserta o período aberto</b> no histórico de cargos. ' +
@@ -2195,14 +2225,14 @@ function abrirMovimentacao(c){
       if (tipo === 'readmissao') {
         const q = el('div','faixa aviso');
         q.innerHTML = 'Vai nascer um <b>vínculo novo</b> para ' + esc(c.Nome) + ': obra ' +
-          esc(p.obraDestino) + ', admissão ' + esc(dataBr(p.data)) +
+          esc(nomeObra(p.obraDestino)) + ', admissão ' + esc(dataBr(p.data)) +
           '. Documentação e tempo de empresa começam do zero. ' +
           'O vínculo atual não é alterado.';
         conf.appendChild(q);
       } else {
         const depois = r.aplica(c, p);
         const dif = Object.keys(depois)
-          .map(k => [k, String(c[k] == null ? '' : c[k]), String(depois[k])])
+          .map(k => [k, valorDeCampo(k, c[k]), valorDeCampo(k, depois[k])])
           .filter(([,a,b]) => a !== b);
         conf.appendChild(dif.length ? tabelaDif(dif)
                                     : el('div','vazio','O cadastro não muda — fica só o registro no histórico.'));
@@ -2280,7 +2310,7 @@ function blocoHistorico(c){
 
     const partes = [];
     if (m.obraOrigem && m.obraDestino && m.obraOrigem !== m.obraDestino)
-      partes.push(m.obraOrigem + ' → ' + m.obraDestino);
+      partes.push(nomeObra(m.obraOrigem) + ' → ' + nomeObra(m.obraDestino));
     if (m.motivo) partes.push(m.motivo);
     if (m.detalhe) partes.push(m.detalhe);
     if (m.por) partes.push('por ' + m.por);
@@ -2370,7 +2400,7 @@ function telaDocumentos(){
 
     const h = el('h4');
     h.innerHTML = esc(nome) +
-      (c ? ' <span class="obra">' + esc(c.ObraAtual || 'sem obra') + ' · ' +
+      (c ? ' <span class="obra">' + esc(nomeObra(c.ObraAtual) || 'sem obra') + ' · ' +
            esc(c.Funcao || '') + '</span>' : '') +
       ' <span class="chip">' + porPessoa[nome].length + '</span>';
     if (c) { h.style.cursor = 'pointer'; h.onclick = () => abrirFicha(c.Id); }
